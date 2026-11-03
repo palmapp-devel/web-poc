@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Interní komunikace – PalmApp</title>
+<meta name="description" content="Stories, Generátor a Režisér: jedna zpráva, srozumitelná verze pro každou skupinu zaměstnanců.">
+<meta name="theme-color" content="#04349F">
+<meta property="og:title" content="Interní komunikace – PalmApp">
+<meta property="og:description" content="Stories, Generátor a Režisér: jedna zpráva, srozumitelná verze pro každou skupinu zaměstnanců.">
+<meta property="og:image" content="https://www.palmapp.com/og-image.jpg">
+<script>document.documentElement.classList.add('js')</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="assets/firma.css">
+</head>
+<body>
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <div class="nav-left">
+      <a href="index.html" aria-label="PalmApp pro firmy – úvod"><img class="logo" src="https://www.palmapp.com/logo.png" alt="PalmApp"></a>
+    </div>
+    <nav aria-label="Hlavní">
+      <ul class="menu">
+        <li><a class="m" href="index.html">Úvod</a></li>
+        <li class="has-mega"><a class="m m--dd" href="index.html#reseni" data-mega aria-haspopup="true" aria-expanded="false" aria-controls="mega-reseni">Oborová řešení</a>
+          <div class="mega mega--seg" id="mega-reseni"><a href="hr.html"><span class="ic ic--pink"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><div><b>Pro HR a zaměstnance</b><small>Komunikace, HR asistent a výběr mzdy</small></div></a><a href="servis.html"><span class="ic ic--seg-blue"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.8a6 6 0 0 1-7.9 7.9l-6.9 6.9a2.1 2.1 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.9-7.9z"/></svg></span><div><b>Pro servis a terén</b><small>Postupy a manuály pro techniky při práci</small></div></a><a href="obchodni-site.html"><span class="ic ic--ring"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span><div><b>Pro obchodní sítě</b><small>Metodiky centrály pro makléře a poradce</small></div></a>
+          </div></li>
+        <li class="has-mega"><a class="m m--dd" href="index.html#funkce" data-mega aria-haspopup="true" aria-expanded="false" aria-controls="mega-produkt" aria-current="page">Produkt</a>
+          <div class="mega" id="mega-produkt"><a href="interni-komunikace.html" aria-current="page"><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"/></svg></span><div><b>Interní komunikace</b></div></a><a href="novinky.html"><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></span><div><b>Novinky</b></div></a><a href="ai-asistent.html"><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.5 8.5 0 1 1 16.1-3.8z"/></svg></span><div><b>AI asistent</b></div></a><a href="vyber-mzdy.html"><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="2.5"/></svg></span><div><b>Výběr mzdy</b></div></a>
+          </div></li>
+        <li><a class="m" href="cenik.html">Ceník</a></li>
+        <li><a class="m" href="kontakt.html">Kontakt</a></li>
+      </ul>
+    </nav>
+    <div class="nav-right">
+      <span class="nav-cta"><a class="btn btn--white" href="kontakt.html" tabindex="-1">Domluvit si schůzku</a></span>
+      <button class="burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="drawer"><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="drawer" id="drawer">
+  <a href="index.html"><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="3"/><path d="M11 18h2"/></svg></span>Úvod</a>
+  <h5>Oborová řešení</h5><a href="hr.html"><span class="ic ic--pink"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Pro HR a zaměstnance</a><a href="servis.html"><span class="ic ic--seg-blue"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.8a6 6 0 0 1-7.9 7.9l-6.9 6.9a2.1 2.1 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.9-7.9z"/></svg></span>Pro servis a terén</a><a href="obchodni-site.html"><span class="ic ic--ring"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span>Pro obchodní sítě</a>
+  <h5>Produkt</h5><a href="interni-komunikace.html"><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"/></svg></span>Interní komunikace</a><a href="novinky.html"><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></span>Novinky</a><a href="ai-asistent.html"><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.5 8.5 0 1 1 16.1-3.8z"/></svg></span>AI asistent</a><a href="vyber-mzdy.html"><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="2.5"/></svg></span>Výběr mzdy</a>
+  <h5>Další</h5>
+  <a href="cenik.html"><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg></span>Ceník</a>
+  <a href="kontakt.html"><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg></span>Kontakt</a>
+  <a class="btn btn--primary btn--lg" href="kontakt.html">Domluvit si schůzku</a>
+</div>
+<main>
+<section class="phead-sec">
+<div class="dark phead">
+  <div class="glow" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="crumbs"><a href="index.html">PalmApp pro firmy</a> / <a href="index.html#funkce">Produkt</a> / Interní komunikace</div>
+    <h1 class="h1" style="margin-top:16px;max-width:940px">Jedno zadání. Srozumitelná verze<br class="br-d"> pro každého zaměstnance.</h1>
+    <p class="lead">Skladník, účetní i vedoucí směny potřebují vědět něco jiného. PalmApp z jedné zprávy připraví verze pro jednotlivé skupiny i krátké vizuální Stories. Vy je jen zkontrolujete a odešlete.</p>
+    <div class="hero-ctas" style="justify-content:flex-start"><a class="btn btn--primary btn--lg" href="kontakt.html">Domluvit si schůzku</a><a class="btn btn--line btn--lg" href="cenik.html">Co by PalmApp řešil u vás</a></div>
+  </div>
+</div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="head" data-reveal><div><h2 class="h2">Od napsání po doručení za pár minut</h2></div><p class="lead">Interní komunikace v PalmAppu stojí na třech nástrojích, které spolu navazují.</p></div>
+    <div class="flow3">
+      <div class="node" data-reveal><span class="k">Krok 1</span><div class="h4">Generátor</div><p class="p" style="margin-top:10px;font-size:15px">Napíšete zprávu jednou. Generátor z ní připraví verze pro výrobu, kancelář, vedoucí i nováčky.</p></div>
+      <div class="arrow" aria-hidden="true"></div>
+      <div class="node node--core" data-reveal style="--d:150ms"><span class="k">Krok 2</span><div class="h4">Stories</div><p class="p" style="margin-top:10px;font-size:15px">Důležité informace převedou do krátkého vizuálního formátu, který lidé v telefonu opravdu dočtou.</p></div>
+      <div class="arrow" aria-hidden="true"></div>
+      <div class="node" data-reveal style="--d:300ms"><span class="k">Krok 3</span><div class="h4">Režisér</div><p class="p" style="margin-top:10px;font-size:15px">Všechno zkontrolujete a schválíte. Bez vašeho souhlasu nic neodejde.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DEMO ============ -->
+<section class="section section--sand" id="demo">
+  <div class="wrap">
+    <div class="head" data-reveal>
+      <div><h2 class="h2">Napíšete jednu zprávu. Každý dostane tu svou.</h2></div>
+      <p class="lead">Skladník, účetní i vedoucí směny potřebují vědět něco jiného. Vyberte zprávu a skupiny a podívejte se, jak by ji dostali.</p>
+    </div>
+    <div class="demo" data-demo data-reveal style="--d:120ms">
+      <div class="demo-in">
+        <label class="l" for="demo-src">1. Zpráva od HR</label>
+        <div class="presets"><button type="button" class="pchip" data-preset="smeny">Změna směn</button><button type="button" class="pchip" data-preset="akce">Firemní den</button><button type="button" class="pchip" data-preset="bozp">Nové pravidlo BOZP</button></div>
+        <textarea class="demo-src" id="demo-src" rows="5"></textarea>
+        <span class="l" style="display:block;font-size:13px;font-weight:600;color:var(--muted);margin:20px 0 10px">2. Komu ji pošlete</span>
+        <div class="groups"><button type="button" class="gchip" data-g="vyroba" aria-pressed="true">Výroba a sklad</button><button type="button" class="gchip" data-g="kancelar" aria-pressed="true">Kancelář</button><button type="button" class="gchip" data-g="vedouci" aria-pressed="true">Vedoucí směn</button><button type="button" class="gchip" data-g="novi" aria-pressed="true">Noví zaměstnanci</button></div>
+        <button type="button" class="btn btn--primary btn--lg demo-go"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"/></svg>Připravit verze</button>
+        <p class="demo-note">Ukázka s připravenými texty. V aplikaci verze připraví Generátor a vy je před odesláním zkontrolujete v Režisérovi.</p>
+      </div>
+      <div class="demo-out" aria-live="polite">
+        <div class="outcard" data-g="vyroba"><div class="who"><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Výroba a sklad</div><div class="bubble"></div><div class="meta">Push notifikace · PalmApp</div></div>
+        <div class="outcard" data-g="kancelar"><div class="who"><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span>Kancelář</div><div class="bubble"></div><div class="meta">Push notifikace · PalmApp</div></div>
+        <div class="outcard" data-g="vedouci"><div class="who"><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span>Vedoucí směn</div><div class="bubble"></div><div class="meta">Push notifikace · PalmApp</div></div>
+        <div class="outcard" data-g="novi"><div class="who"><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"/></svg></span>Noví zaměstnanci</div><div class="bubble"></div><div class="meta">Push notifikace · PalmApp</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="wrap">
+    <div class="split">
+      <div class="media" style="height:460px" data-reveal>Mockup · Cílení zpráv v administraci</div>
+      <div data-reveal style="--d:120ms">
+        <h2 class="h3">Celé firmě, jednomu závodu nebo jedné směně</h2>
+        <p class="lead" style="margin-top:16px;font-size:17px">Skupiny nastavíte podle toho, jak firma opravdu funguje: závody, oddělení, směny, pozice nebo noví zaměstnanci. Každá zpráva dorazí jen tomu, koho se týká.</p>
+        <ul class="bul"><li><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Skupiny podle závodů, oddělení a směn</li><li><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Push upozornění přímo do telefonu</li><li><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Pozvánky s potvrzením účasti</li></ul>
+        <div class="gains"><div class="gain gain--firm"><span class="k">Pro firmu</span><p>Méně času psaním a přepisováním a jednotné sdělení napříč firmou.</p></div><div class="gain gain--emp"><span class="k">Pro zaměstnance</span><p>Krátké, jasné zprávy, které se ho opravdu týkají.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="head" data-reveal><div><h2 class="h2">Co dalšího PalmApp umí</h2></div><a class="btn btn--line" href="index.html#funkce">Všechny funkce</a></div>
+    <div class="grid-3" style="margin-top:48px"><a class="card card-link" href="novinky.html" data-reveal style="--d:0ms"><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></span><div class="h4">Novinky</div><p class="p">Oznámení a pozvánky do telefonu</p><span class="link-arrow">Více</span></a><a class="card card-link" href="ai-asistent.html" data-reveal style="--d:90ms"><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.5 8.5 0 1 1 16.1-3.8z"/></svg></span><div class="h4">AI asistent</div><p class="p">Odpovídá za HR, i hlasem</p><span class="link-arrow">Více</span></a><a class="card card-link" href="vyber-mzdy.html" data-reveal style="--d:180ms"><span class="ic ic--gold"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="2.5"/></svg></span><div class="h4">Výběr mzdy</div><p class="p">Benefit za 0 Kč měsíčně</p><span class="link-arrow">Více</span></a></div>
+  </div>
+</section>
+<section class="inset" style="margin-top:var(--pad)" data-curtain-host>
+  <div class="cta" data-curtain>
+    <h2 class="h2" data-reveal>Ukážeme vám PalmApp na vaší firmě</h2>
+    <p class="lead" data-reveal style="--d:100ms">Za 30 minut projdeme, jak by aplikace fungovala u vás: komunikace, asistent, služby i výběr mzdy. Nezávazně.</p>
+    <div class="btns" data-reveal style="--d:200ms"><a class="btn btn--white btn--lg" href="kontakt.html">Domluvit si schůzku</a><a class="btn btn--ghost-w btn--lg" href="cenik.html">Co by PalmApp řešil u vás</a></div>
+  </div>
+</section>
+
+
+</main>
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div><img src="https://www.palmapp.com/logo.png" alt="PalmApp" style="height:28px;width:auto"><p class="p" style="margin-top:16px;max-width:320px;font-size:14px">Aplikace pro vaše lidi v provozu, v terénu i na schůzce. AI asistent, novinky, školení a výběr mzdy na jednom místě.</p></div>
+      <div><h4>Oborová řešení</h4><ul><li><a href="hr.html">Pro HR a zaměstnance</a></li><li><a href="servis.html">Pro servis a terén</a></li><li><a href="obchodni-site.html">Pro obchodní sítě</a></li></ul></div><div><h4>Produkt</h4><ul><li><a href="index.html#funkce">Co PalmApp umí</a></li><li><a href="interni-komunikace.html">Interní komunikace</a></li><li><a href="novinky.html">Novinky</a></li><li><a href="ai-asistent.html">AI asistent</a></li><li><a href="vyber-mzdy.html">Výběr mzdy</a></li></ul></div>
+      <div><h4>Firma</h4><ul><li><a href="index.html">Úvod</a></li><li><a href="cenik.html">Ceník</a></li><li><a href="index.html#bezpecnost">Bezpečnost</a></li><li><a href="zamestnanec.html">Pro zaměstnance</a></li></ul></div>
+      <div><h4>Kontakt</h4><ul><li><a href="kontakt.html">Domluvit si schůzku</a></li><li><a href="mailto:michal.vesely@palmapp.com">michal.vesely@palmapp.com</a></li><li><a href="tel:+420777359580">+420 777 359 580</a></li></ul></div>
+    </div>
+    <div class="foot-bottom"><span>© 2026 PalmApp Tech s.r.o. · Naardenská 669/23, 162 00 Praha 6 · IČ 09707123 · DIČ CZ09707123</span><a href="https://www.palmapp.com/zasady-ochrany-osobnich-udaju.html" style="color:var(--muted)">Zásady zpracování osobních údajů</a></div>
+  </div>
+</footer>
+<script src="assets/firma.js"></script>
+</body>
+</html>
