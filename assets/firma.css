@@ -1574,3 +1574,305 @@ footer{padding:72px 0 40px;border-top:1px solid var(--line);margin-top:96px;font
 .seg-page .cta::before{display:block}
 .seg-page .cta .lead{color:var(--sky-2)}
 @media (max-width:640px){.cta{min-height:88vh;padding:72px 20px}}
+
+/* ============ CENÍK: kalkulačka (data-pricecalc) ============ */
+.pc-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+.pc-tabs button{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 20px;border-radius:999px;border:1px solid #D5D9E2;background:#fff;color:var(--ink);font:500 15px Inter,system-ui,sans-serif;cursor:pointer}
+.pc-tabs button[aria-selected="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
+.pc-tabs .sdot--white{background:#fff;box-shadow:inset 0 0 0 2px var(--ink)}
+.pc-tabs button[aria-selected="true"] .sdot--white{box-shadow:inset 0 0 0 2px #fff;background:transparent}
+.pc-sub{font-weight:400;color:var(--muted);margin-left:8px;font-size:14px}
+.pc-hint{margin:14px 0 0;font-size:13px;line-height:1.5;color:var(--muted-2)}
+.pc-num{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:18px}
+.pc-num label{font-weight:600;font-size:15px}
+.pc-num input{width:120px;min-height:48px;border:1px solid #D5D9E2;border-radius:12px;padding:0 14px;font:500 18px Inter,system-ui,sans-serif;text-align:right;color:var(--ink);background:#fff}
+.pc-num input:focus{outline:2px solid var(--blue);outline-offset:1px;border-color:var(--blue)}
+.cfg-step .pc-num+.opts{margin-top:14px}
+.pc-name{font:500 clamp(26px,2.4vw,32px)/1.1 "Inter Tight",Inter,sans-serif;letter-spacing:-.03em;margin-top:10px}
+.pc-tag{margin-top:6px;font-size:14px;font-weight:600;color:var(--blue)}
+.pc-list{list-style:none;padding:0;margin:20px 0 0;display:grid;gap:8px}
+.pc-list li{display:flex;gap:12px;padding:12px;border-radius:14px;background:var(--sand);font-size:14px;line-height:1.45;border:1px solid transparent;transition:background .3s,border-color .3s}
+.pc-list li.on{background:var(--sky-3);border-color:var(--sky-2)}
+.pc-list li b{display:block;font-size:15px}
+.pc-list li span:not(.ic){color:var(--muted)}
+.pc-list .ic{width:36px;height:36px;background:#fff;flex:none}
+.pc-pay{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:0}
+.pc-pay button{min-height:44px;border:1px solid #D5D9E2;background:#fff;border-radius:12px;font:500 14px Inter,system-ui,sans-serif;color:var(--ink);cursor:pointer;padding:0 10px}
+.pc-pay button em{font-style:normal;color:var(--green);font-weight:600}
+.pc-pay button[aria-pressed="true"]{border-color:var(--blue);background:var(--sky-3);box-shadow:inset 0 0 0 1px var(--blue)}
+.pc-lines{margin-top:16px}
+.pc-lines b{white-space:nowrap}
+.pc-total{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
+.pc-total span{color:var(--muted);font-size:15px}
+.pc-total b{font:500 clamp(30px,3vw,40px)/1 "Inter Tight",Inter,sans-serif;letter-spacing:-.03em;white-space:nowrap}
+.pc-subt{margin:8px 0 0;font-size:13px;line-height:1.55;color:var(--muted)}
+.pc-impl{display:flex;justify-content:space-between;gap:12px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line);font-size:14px}
+.pc-impl+.pc-impl{border-top:0;margin-top:6px;padding-top:0}
+.pc-impl span{color:var(--muted)}
+.pc-impl b{white-space:nowrap;text-align:right}
+.pc-integ{margin:12px 0 0;padding:10px 12px;border-radius:12px;background:var(--gold-bg);color:var(--gold-ink);font-size:13px;line-height:1.5}
+.pc-foot{margin:14px 0 0;font-size:12px;line-height:1.55;color:var(--muted-2)}
+.pc-foot b{color:var(--muted)}
+.pc-res .btn{margin-top:18px;width:100%}
+@media (max-width:640px){
+  .pc-tabs{gap:6px}.pc-tabs button{padding:0 14px;font-size:14px;min-height:44px}
+  .pc-num{flex-wrap:wrap}.pc-num input{width:100%}
+  .pc-pay{grid-template-columns:1fr}
+}
+
+/* ============ Demo vs. pilot ============ */
+.dp{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-top:48px}
+.dp-card{position:relative;background:#fff;border:1px solid var(--line);border-radius:var(--r-l);padding:32px;display:flex;flex-direction:column}
+.dp-card--pilot{background:var(--navy);border-color:var(--navy);color:#fff}
+.dp-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.dp-k{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
+.dp-card--pilot .dp-k{color:var(--gold)}
+.dp-price{font:500 22px/1.2 "Inter Tight",Inter,sans-serif;letter-spacing:-.02em;text-align:right;white-space:nowrap}
+.dp-price small{display:block;font:400 13px Inter,sans-serif;color:var(--muted);margin-top:2px}
+.dp-card--pilot .dp-price small{color:var(--sky-2)}
+.dp-card .h3{margin-top:14px}
+.dp-card .p{margin-top:10px}
+.dp-card--pilot .p{color:var(--sky-2)}
+.dp-card .bul{margin-top:20px;font-size:15px}
+.dp-card--pilot .bul .i{color:var(--gold)}
+.dp-card .btn{margin-top:auto;align-self:flex-start}
+.dp-card .bul+.btn{margin-top:28px}
+.dp-flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:20px;font-size:14px;color:var(--muted)}
+.dp-flow b{display:inline-flex;align-items:center;min-height:36px;padding:0 14px;border-radius:999px;background:#fff;border:1px solid var(--line);color:var(--ink);font-weight:500}
+.dp-flow i{font-style:normal;color:var(--muted-2)}
+@media (max-width:900px){.dp{grid-template-columns:minmax(0,1fr)}.dp-card{padding:24px}}
+
+/* ceník: přehled cen */
+.ptab{width:100%;border-collapse:collapse;font-size:15px;margin-top:24px;background:#fff;border-radius:var(--r-l);overflow:hidden}
+.ptab th,.ptab td{text-align:left;padding:14px 18px;border-bottom:1px solid var(--line)}
+.ptab th{font-size:13px;color:var(--muted);font-weight:600;background:#FAFBFD}
+.ptab td:not(:first-child),.ptab th:not(:first-child){text-align:right;white-space:nowrap}
+.ptab tr:last-child td{border-bottom:0}
+.ptab-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:var(--r-l)}
+.ptab-wrap .ptab{margin:0;border-radius:0}
+.pnote{margin:14px 0 0;font-size:14px;line-height:1.6;color:var(--muted);max-width:820px}
+.pgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;margin-top:40px}
+.pgrid h3{margin:0;font:500 22px/1.2 "Inter Tight",Inter,sans-serif;letter-spacing:-.02em}
+@media (max-width:960px){.pgrid{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:640px){.ptab th,.ptab td{padding:12px}}
+
+/* obchodní sítě: kalkulačka zátěže centrály */
+.calc-out .rows .row b{white-space:nowrap}
+.ptab td:first-child{white-space:nowrap}
+
+/* ============ Oborové stránky: sticky telefon (převzato ze zaměstnanecké části) ============ */
+.fstory{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:96px;position:relative}
+.fs-steps{order:2;position:relative}
+.fs-pin-col{order:1}
+.fs-step{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:80px 0;opacity:.28;transition:opacity .6s ease}
+.fs-step.on{opacity:1}
+.fs-step .h3{margin-top:16px}
+.fs-step .lead{margin-top:18px}
+.fs-step .bul{margin-top:28px}
+.fs-more{margin-top:28px;align-self:flex-start;display:inline-flex;align-items:center;gap:8px;font-weight:500;color:var(--blue);text-decoration:none;min-height:44px}
+.fs-more::after{content:"→";transition:transform .3s var(--ease)}
+.fs-more:hover::after{transform:translateX(4px)}
+.fs-mmedia{display:none}
+.fs-pin{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:flex-start;gap:96px}
+.fs-stage{position:relative;width:340px;height:min(680px,78vh);flex:none}
+.fs-device{position:absolute;inset:0;border-radius:52px;background:var(--ink);padding:10px;box-shadow:0 60px 100px -40px rgba(5,13,36,.55),0 0 0 1px rgba(10,15,31,.08)}
+.fs-screens{position:relative;width:100%;height:100%;border-radius:43px;overflow:hidden;background:#EEF2FB}
+.fs-screen{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;color:var(--navy);opacity:0;transform:translateY(60px) scale(.94);transition:opacity .7s ease,transform 1s var(--ease);background:linear-gradient(170deg,#E8EEFC,#C9D6FA)}
+.fs-screen:nth-child(2n){background:linear-gradient(170deg,#E9EDF8,#D3DCF4)}
+.fs-screen:nth-child(5){background:linear-gradient(170deg,#F4EFE4,#EAD9B5)}
+.fs-screen.on{opacity:1;transform:none}
+.fs-screen.past{transform:translateY(-60px) scale(.94)}
+.fs-sats{position:absolute;inset:0;pointer-events:none}
+.fs-sat{position:absolute;background:#fff;color:var(--ink);border-radius:18px;padding:14px 16px;box-shadow:0 24px 50px -20px rgba(5,13,36,.35);font-size:14px;line-height:1.4;opacity:0;transform:translateY(24px) scale(.96);transition:opacity .6s ease,transform .9s var(--ease)}
+.fs-sats.on .fs-sat{opacity:1;transform:none}
+.fs-sats.on .fs-sat:nth-child(2){transition-delay:.15s}
+.fs-sat b{display:block;font-weight:600}
+.fs-sat small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.fs-sat--l{left:-64px}
+.fs-sat--r{right:-56px}
+.fs-sat--q{background:var(--blue);color:#fff}
+.fs-sat--q b{font-weight:500}
+.fs-sat .dot{display:inline-block;width:8px;height:8px;border-radius:999px;background:var(--blue);margin-right:8px}
+.fs-rail{order:-1;display:flex;flex-direction:column;gap:6px;position:relative;padding-left:18px}
+.fs-rail::before{content:"";position:absolute;left:0;top:6px;bottom:6px;width:2px;background:var(--line);border-radius:2px}
+.fs-rail::after{content:"";position:absolute;left:0;top:6px;width:2px;height:calc((100% - 12px) * var(--p,0));background:var(--blue);border-radius:2px}
+.fs-rail a{display:flex;gap:10px;align-items:baseline;font-size:14px;color:var(--muted-2);text-decoration:none;padding:6px 0;min-height:32px;transition:color .4s ease;white-space:nowrap}
+.fs-rail a span{font-family:"Inter Tight",Inter,sans-serif;font-size:12px}
+.fs-rail a.on{color:var(--ink);font-weight:500}
+.fs-rail a.on span{color:var(--blue)}
+.fs-head{padding-top:var(--pad)}
+@media (max-width:1200px){.fs-sat--l{left:-40px}.fs-sat--r{right:-24px}.fs-pin{justify-content:center}.fs-rail{display:none}}
+@media (max-width:900px){
+  .fstory{grid-template-columns:minmax(0,1fr);gap:0}
+  .fs-pin-col{display:none}
+  .fs-step{min-height:0;opacity:1;padding:48px 0;border-top:1px solid var(--line)}
+  .fs-step:first-child{border-top:0}
+  .fs-mmedia{display:flex;height:360px;border-radius:var(--r-l);margin-bottom:28px;align-items:center;justify-content:center;font-size:13px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;color:var(--navy);background:linear-gradient(160deg,#DDE5F7,var(--sky-2))}
+}
+@media (prefers-reduced-motion:reduce){.fs-step,.fs-screen,.fs-sat{transition:none}}
+
+/* ============ Banner: demo aplikace ============ */
+.dbanner{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:32px;background:var(--navy);color:#fff;border-radius:var(--r-xl);padding:56px 64px}
+.dbanner::before{content:"";position:absolute;inset:0;background:radial-gradient(50% 90% at 100% 0%,rgba(18,82,234,.75),transparent 70%);pointer-events:none}
+.dbanner>*{position:relative}
+.dbanner .h2{color:#fff;max-width:640px}
+.dbanner p{margin:14px 0 0;color:var(--sky-2);font-size:18px;line-height:1.55;max-width:560px}
+.dbanner .btn{flex:none}
+@media (max-width:900px){.dbanner{flex-direction:column;align-items:flex-start;padding:36px 28px}}
+
+/* ============ Footer bannery: demo / pilot ============ */
+.fbn{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+.fbn-card{position:relative;overflow:hidden;border-radius:var(--r-xl);padding:48px;display:flex;flex-direction:column;min-height:340px;background:var(--sky-3);border:1px solid var(--sky-2)}
+.fbn-card--pilot{background:var(--ink);border-color:var(--ink);color:#fff}
+.fbn-card--pilot::before{content:"";position:absolute;inset:0;background:radial-gradient(60% 80% at 100% 0%,rgba(18,82,234,.6),transparent 70%);pointer-events:none}
+.fbn-card>*{position:relative}
+.fbn-k{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
+.fbn-card--pilot .fbn-k{color:var(--gold)}
+.fbn-k em{font-style:normal;letter-spacing:0;text-transform:none;font-weight:500;color:var(--muted)}
+.fbn-card--pilot .fbn-k em{color:var(--sky-2)}
+.fbn-card .h3{margin-top:18px;max-width:440px}
+.fbn-card p{margin:14px 0 0;font-size:16px;line-height:1.6;color:var(--muted);max-width:460px}
+.fbn-card--pilot p{color:var(--sky-2)}
+.fbn-card .btn{margin-top:auto;align-self:flex-start}
+.fbn-card p+.btn{margin-top:32px}
+@media (max-width:900px){.fbn{grid-template-columns:minmax(0,1fr)}.fbn-card{padding:32px 28px;min-height:0}}
+.pc-num--solo{justify-content:flex-start;gap:12px}
+.pc-num--solo input{width:140px}
+.pc-num--solo span{color:var(--muted);font-size:15px}
+@media (max-width:640px){.pc-num--solo{flex-wrap:nowrap}.pc-num--solo input{width:120px}}
+
+/* ============ Velké patičkové bannery: demo / pilot ============ */
+.fbig{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.fbig-host{min-width:0;display:flex}
+.fbig-card{flex:1;padding:96px 48px}
+.fbig-k{display:inline-block;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--sky-2)}
+.fbig-card .h2{margin-top:18px;color:#fff}
+.fbig-card .lead{max-width:520px}
+.seg-page .cta.fbig-card--pilot{background:var(--navy)}
+.seg-page .cta.fbig-card--pilot::before{background:radial-gradient(60% 60% at 50% 115%,rgba(235,173,65,.35),transparent 70%),radial-gradient(50% 60% at 100% 0%,rgba(18,82,234,.8),transparent 70%)}
+.fbig-card--pilot .fbig-k{color:var(--gold)}
+.fbig-steps{list-style:none;counter-reset:fb;max-width:460px;margin:36px auto 0;padding:0;text-align:left;display:grid;gap:16px}
+.fbig-steps li{counter-increment:fb;display:grid;grid-template-columns:32px minmax(0,1fr);column-gap:14px}
+.fbig-steps li::before{content:counter(fb);grid-row:span 2;width:32px;height:32px;border-radius:999px;border:1px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font:500 13px "Inter Tight",Inter,sans-serif;color:#fff}
+.fbig-card--pilot .fbig-steps li::before{border-color:rgba(235,173,65,.6);color:var(--gold)}
+.fbig-steps b{font-weight:600;font-size:16px;color:#fff;line-height:1.4}
+.fbig-steps span{font-size:14px;line-height:1.55;color:var(--sky-2)}
+.fbig-card .btns{margin-top:40px}
+@media (max-width:960px){
+  .fbig{grid-template-columns:minmax(0,1fr)}
+  .fbig-card{min-height:0;padding:72px 24px}
+}
+
+/* ============ v6: banner na střed, bannery pod sebou ============ */
+.dbanner{flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:0;padding:72px 64px}
+.dbanner .h2{max-width:none}
+.dbanner p{margin:16px auto 0;max-width:640px}
+.dbanner .btn{margin-top:32px}
+.head--center{justify-content:center;text-align:center}
+.head--center .h2{margin-top:0}
+.fbig--stack{grid-template-columns:minmax(0,1fr);gap:0}
+.fbig--stack .fbig-card{min-height:0;padding:120px 48px}
+.fbig--stack .fbig-card .lead{max-width:640px}
+.fbig-or{display:flex;align-items:center;justify-content:center;gap:16px;padding:28px 0;font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink)}
+.fbig-or::before,.fbig-or::after{content:"";width:48px;height:1px;background:var(--line)}
+@media (max-width:640px){.dbanner{padding:48px 24px}.fbig--stack .fbig-card{padding:80px 24px}}
+
+/* ============ v8: demo banner přes celou šířku, tmavý ============ */
+.dband-sec{padding:0 12px;margin:var(--pad) 0}
+.dband-sec .dbanner{max-width:none;width:100%;box-sizing:border-box;background:var(--night);border-radius:var(--r-xl);padding:120px 32px}
+.dband-sec .dbanner::before{background:radial-gradient(55% 70% at 50% 118%,rgba(255,163,122,.32),transparent 70%),radial-gradient(45% 60% at 100% 0%,rgba(18,82,234,.45),transparent 70%)}
+.dband-sec .dbanner .h2{font-size:clamp(36px,4.2vw,60px)}
+.dband-sec+.section{padding-top:0}
+@media (max-width:640px){.dband-sec{padding:0 8px}.dband-sec .dbanner{padding:80px 20px}}
+.fbig-card .lead{max-width:440px}
+.cta.fbig-card--pilot{background:var(--navy)}
+.cta.fbig-card--pilot::before{display:block;background:radial-gradient(60% 60% at 50% 115%,rgba(235,173,65,.35),transparent 70%),radial-gradient(50% 60% at 100% 0%,rgba(18,82,234,.8),transparent 70%)}
+/* v9: bannery demo/pilot se vejdou na obrazovku notebooku */
+.fbig .fbig-card{min-height:min(600px,calc(100vh - 140px));padding:72px 40px}
+@media (max-width:960px){.fbig .fbig-card{min-height:0;padding:64px 24px}}
+/* oborové štítky v hero */
+.htags{margin-top:44px;max-width:860px}
+.htags-l{display:block;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.75)}
+.htags ul{list-style:none;padding:0;margin:14px 0 0;display:flex;flex-wrap:wrap;gap:8px}
+.htags li{display:inline-flex;align-items:center;min-height:36px;padding:0 14px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);color:#fff;font-size:14px;font-weight:500;backdrop-filter:blur(6px)}
+@media (max-width:640px){.htags{margin-top:32px}.htags li{font-size:13px;min-height:32px;padding:0 12px}}
+.htags{margin-left:auto;margin-right:auto;text-align:center}
+.htags ul{justify-content:center}
+
+/* ============ v13: reálné screeny a fotky místo mockupů ============ */
+.has-img{padding:0 !important;overflow:hidden;background:#EEF2FB}
+.has-img img{display:block;width:100%;height:100%;object-fit:cover}
+.has-img.is-screen img{object-position:top center}
+.has-img.is-photo img{object-position:center}
+.fstage-phone .has-img{background:#fff}
+.fs-screen.has-img{background:#fff}
+.fs-mmedia.has-img{height:auto;background:linear-gradient(160deg,#E8EEFC,var(--sky-2));padding:32px 0 0 !important;align-items:flex-end}
+.fs-mmedia.has-img img{width:min(260px,70%);height:auto;border-radius:28px 28px 0 0;box-shadow:0 20px 40px -20px rgba(5,13,36,.35)}
+.media.has-img.is-photo{height:auto !important;aspect-ratio:1/1}
+@media (max-width:960px){.media.has-img.is-photo{aspect-ratio:4/3}}
+
+/* ============ v14: rámeček iPhone 16 (displej 393 × 852) ============ */
+.fs-stage{width:auto;height:min(700px,80vh);aspect-ratio:413/872}
+.fs-device{padding:2.42%;border-radius:15.7%/7.45%}
+.fs-screens{border-radius:14%/6.46%;container-type:inline-size}
+.fs-screen.has-img img,.fs-screen.has-img{border-radius:0}
+.fs-screen.has-img img{object-fit:fill}
+.fs-screens::after,.fstage-phone .has-img::after,.fs-mmedia.has-img .fs-island{content:"";position:absolute;z-index:5;left:34.1cqw;top:2.8cqw;width:31.8cqw;height:9.4cqw;border-radius:999px;background:#000;pointer-events:none}
+/* poloviční telefon v hero */
+.fstage-phone{padding:7px 7px 0}
+.fstage-phone .has-img{position:relative;container-type:inline-size;border-radius:30px 30px 0 0;background:#fff}
+.fstage-phone .has-img img{height:auto;object-fit:initial}
+/* mobil: screen v rámečku */
+.fs-mmedia.has-img img{border:8px solid var(--ink);border-bottom:0;border-radius:44px 44px 0 0;box-shadow:0 20px 40px -20px rgba(5,13,36,.45)}
+.fstage-phone .has-img{display:block}
+.fstage-ph.has-img{height:100%;display:block}
+.fstage-ph.has-img img{object-position:55% 40%}
+
+/* ============ v19: hero firmy – celý dashboard + celý telefon ============ */
+.fhero{height:auto;min-height:calc(100svh - 24px);padding-bottom:clamp(96px,12vh,140px)}
+.fstage{flex:none;width:100%;max-width:1120px;min-height:0;transform:none}
+.fstage-admin{position:relative;inset:auto;width:84%;border:1px solid rgba(255,255,255,.18);border-radius:20px;background:#0E1630;box-shadow:0 50px 100px -40px rgba(0,0,0,.7);overflow:hidden}
+.fstage-admin .fstage-bar{height:36px;background:rgba(255,255,255,.04)}
+.fstage-admin>img{display:block;width:100%;height:auto}
+.fstage-phone{position:absolute;right:0;top:14%;bottom:auto;left:auto;margin:0;width:24%;height:auto;aspect-ratio:413/872;padding:2.42%;border-radius:15.7%/7.45%;border:1px solid rgba(255,255,255,.25);background:#0A0F1F;box-shadow:0 50px 90px -30px rgba(0,0,0,.75)}
+.fstage-screen{position:relative;width:100%;height:100%;border-radius:14%/6.46%;overflow:hidden;background:#fff;container-type:inline-size}
+.fstage-screen img{display:block;width:100%;height:100%;object-fit:fill}
+.fstage-screen::after{content:"";position:absolute;z-index:2;left:34.1cqw;top:2.8cqw;width:31.8cqw;height:9.4cqw;border-radius:999px;background:#000}
+.fw--1{left:-24px;top:22%}
+.fw--2{left:44%;top:70%}
+.fw--3{right:21%;top:-4%}
+@media (max-width:960px){.fstage-phone{width:26%}}
+@media (max-width:640px){
+  .fstage-admin{display:block;width:100%}
+  .fstage-phone{position:relative;right:auto;top:auto;width:62%;margin:-18% auto 0}
+}
+@media (max-width:640px){.fstage-phone{width:52%;margin-top:-12%}}
+
+/* ============ v20: ceník – vše hned vidět ============ */
+.page-cenik [data-reveal]{opacity:1 !important;transform:none !important;filter:none !important;transition:none !important}
+.page-cenik .phead{padding-top:clamp(104px,13vh,132px);padding-bottom:40px}
+.page-cenik .phead .h1{font-size:clamp(34px,4.4vw,56px)}
+.page-cenik .section{padding-top:64px;padding-bottom:64px}
+.page-cenik #kalkulacka{padding-top:40px}
+.cjump{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:28px}
+.cjump a{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;border-radius:999px;border:1px solid rgba(255,255,255,.28);color:#fff;font-size:14px;font-weight:500;text-decoration:none}
+.cjump a:hover{background:rgba(255,255,255,.12);color:#fff}
+.cjump a::after{content:"↓";margin-left:8px;opacity:.7}
+
+/* ============ v21 ============ */
+/* hero úvodu: tenký rámeček telefonu (padding v % se počítal z celé plochy) */
+.fstage-phone{padding:clamp(5px,.55vw,8px)}
+/* obory: rozcestník v hero */
+.phead .cjump{justify-content:center}
+.seg-page .phead .hero-ctas+.cjump{margin-top:24px}
+/* obory: štítky pod hero */
+.segtags{padding:40px 0 0;text-align:center}
+.segtags-l{display:block;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.segtags ul{list-style:none;padding:0;margin:16px auto 0;max-width:1000px;display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.segtags li{display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:999px;background:var(--sky-3);border:1px solid var(--sky-2);color:var(--navy);font-size:15px;font-weight:600}
+.segtags+.section{padding-top:72px}
+@media (max-width:640px){.segtags li{min-height:38px;padding:0 14px;font-size:14px}}
+/* v22: zaoblení telefonu v hero – vnitřní radius = vnější − rámeček */
+.fstage-phone{--bz:clamp(5px,.55vw,8px);padding:var(--bz);container-type:inline-size;border-radius:15.7%/7.45%}
+.fstage-screen{border-radius:calc(15.7cqw - var(--bz))}
+.fstage-phone .fstage-screen{display:block;height:100%;border-radius:calc(15.7cqw - var(--bz));background:#fff}

@@ -6,17 +6,6 @@
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   var fmt = function (n) { return Math.round(n).toLocaleString('cs-CZ').replace(/ /g, ' '); };
 
-  /* ---------- ceník (Kč bez DPH / měsíc) ---------- */
-  var EUR = 25;
-  var PRICE = {
-    zaklad: { name: 'Základ', monthly: 0 },
-    asistent: { name: 'Asistent', monthly: 99 * EUR },
-    komplet: { name: 'Komplet', monthly: 250 * EUR },
-    panel: 260 * EUR,
-    zavod: 500 * EUR,
-    ewaFee: 79
-  };
-
   /* ---------- nav ---------- */
   var nav = $('.nav');
   var onScroll = function () { if (nav) nav.classList.toggle('stuck', window.scrollY > 8); };
@@ -80,7 +69,8 @@
         vyroba: 'Od 1. 11. začíná ranní směna v 6:00 (ne v 5:30). Nový rozpis uvidíte v aplikaci do pátku.',
         kancelar: 'Pro vás se nic nemění, pracovní doba zůstává stejná. Ve výrobě se od 1. 11. posouvá ranní směna na 6:00.',
         vedouci: 'Do pátku dostanete nové rozpisy směn. Od 1. 11. začíná ranní směna v 6:00, prosím informujte svůj tým.',
-        novi: 'Vítejte! Ranní směna začíná od 1. 11. v 6:00. Rozpis najdete v aplikaci v sekci Dokumenty.'
+        novi: 'Vítejte! Ranní směna začíná od 1. 11. v 6:00. Rozpis najdete v aplikaci v sekci Dokumenty.',
+        ua: 'Від 1.11 ранкова зміна починається о 6:00 (а не о 5:30). Новий графік з’явиться в застосунку до п’ятниці.'
       }
     },
     akce: {
@@ -89,7 +79,8 @@
         vyroba: '14. 11. končí odpolední směna už ve 13:30 a od 14:00 začíná firemní den v areálu. Účast potvrďte v aplikaci do 7. 11.',
         kancelar: 'Firemní den 14. 11. od 14:00 v areálu závodu, s programem pro rodiny a občerstvením. Potvrďte účast do 7. 11.',
         vedouci: '14. 11. je zkrácená odpolední směna do 13:30. Zkontrolujte obsazení a připomeňte týmu potvrzení účasti do 7. 11.',
-        novi: 'Skvělá příležitost poznat kolegy: firemní den 14. 11. od 14:00. Stačí potvrdit účast v aplikaci do 7. 11.'
+        novi: 'Skvělá příležitost poznat kolegy: firemní den 14. 11. od 14:00. Stačí potvrdit účast v aplikaci do 7. 11.',
+        ua: '14.11 післяобідня зміна закінчується вже о 13:30, а о 14:00 починається корпоративне свято на території заводу. Підтвердіть участь у застосунку до 7.11.'
       }
     },
     bozp: {
@@ -98,7 +89,8 @@
         vyroba: 'Od pondělí: reflexní vesta po celou směnu, i o přestávkách venku. Vyzvednete si ji u vedoucího směny. Krátké školení najdete v aplikaci.',
         kancelar: 'Když jdete do skladu nebo venkovního areálu, vezměte si reflexní vestu. Od pondělí je povinná.',
         vedouci: 'Od pondělí vydávejte reflexní vesty a kontrolujte jejich nošení po celou směnu. Školení týmu proběhne v aplikaci.',
-        novi: 'Bezpečnost na prvním místě: ve skladu vždy noste reflexní vestu. Vyzvednete si ji u vedoucího směny.'
+        novi: 'Bezpečnost na prvním místě: ve skladu vždy noste reflexní vestu. Vyzvednete si ji u vedoucího směny.',
+        ua: 'З понеділка світловідбивний жилет обов’язковий протягом усієї зміни, також під час перерв надворі. Отримати його можна в керівника зміни. Коротке навчання знайдете в застосунку.'
       }
     }
   };
@@ -142,117 +134,6 @@
     setPreset('smeny');
   }
 
-  /* ======================================================
-     KALKULAČKA PŘÍNOSŮ
-     ====================================================== */
-  $$('[data-calc]').forEach(function (calc) {
-    var g = function (n) { var el = $('[name="' + n + '"]', calc); return el ? parseFloat(el.value) || 0 : null; };
-    var pkg = calc.getAttribute('data-pkg') || 'komplet';
-    $$('[data-pkg-btn]', calc).forEach(function (b) {
-      b.addEventListener('click', function () {
-        pkg = b.getAttribute('data-pkg-btn');
-        $$('[data-pkg-btn]', calc).forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
-        run();
-      });
-    });
-    var out = function (k, v) { $$('[data-o="' + k + '"]', calc).forEach(function (el) { el.textContent = v; }); };
-    var run = function () {
-      var N = g('n'), Z = g('zavody') || 1, W = g('mzda') || 42000, panel = $('[name="panel"]', calc);
-      var q = g('q') != null ? g('q') : 1, m = g('m') != null ? g('m') : 10, a = (g('a') != null ? g('a') : 50) / 100;
-      var h = g('h') != null ? g('h') : 400, comm = g('comm') != null ? g('comm') : 3;
-      var f = (g('f') != null ? g('f') : 20) / 100, c = (g('c') != null ? g('c') : 20) / 100, d = (g('d') != null ? g('d') : 1) / 100;
-      $$('output[data-for]', calc).forEach(function (o) { var v = g(o.getAttribute('data-for')); o.textContent = fmt(v) + (o.getAttribute('data-unit') || ''); });
-      var hrHours = N * q * m / 60 * a;
-      var commHours = Z * comm * 4.33 * 0.5;
-      var hours = hrHours + commHours;
-      var timeKc = hours * h;
-      var turnSave = N * d * (W * 12 * c);
-      var price = (PRICE[pkg] ? PRICE[pkg].monthly : 0) + (panel && panel.checked ? PRICE.panel : 0) + Math.max(0, Z - 1) * PRICE.zavod;
-      var net = timeKc + turnSave / 12 - price;
-      out('hours', fmt(hours));
-      out('hrHours', fmt(hrHours) + ' h');
-      out('commHours', fmt(commHours) + ' h');
-      out('timeKc', fmt(timeKc) + ' Kč');
-      out('turn', fmt(turnSave) + ' Kč / rok');
-      out('price', price ? '− ' + fmt(price) + ' Kč' : '0 Kč');
-      out('net', fmt(net));
-      out('netYear', fmt(net * 12) + ' Kč');
-      out('ewa', fmt(N));
-      out('pkgName', PRICE[pkg] ? PRICE[pkg].name : '');
-      var link = $('[data-calc-link]', calc);
-      if (link) link.href = 'kontakt.html?zdroj=kalkulacka&zamestnanci=' + N + '&zavody=' + Z + '&balicek=' + pkg + (panel && panel.checked ? '&panel=1' : '');
-    };
-    $$('input', calc).forEach(function (i) { i.addEventListener('input', run); i.addEventListener('change', run); });
-    run();
-  });
-
-  /* ======================================================
-     KONFIGURÁTOR ŘEŠENÍ
-     ====================================================== */
-  var cfg = $('[data-cfg]');
-  if (cfg) {
-    var state = { obor: 'vyroba', vel: 'm', need: ['email', 'hr'] };
-    var MOD = {
-      komunikace: { t: 'Interní komunikace a novinky', d: 'Zprávy, oznámení a upozornění přímo do telefonu, i lidem bez firemního e-mailu.', ic: 'bell' },
-      generator: { t: 'Stories, Generátor a Režisér', d: 'Z jedné zprávy připraví verze pro jednotlivé skupiny. Vy je před odesláním zkontrolujete.', ic: 'spark' },
-      asistent: { t: 'AI asistent (Chatbot + Voicebot)', d: 'Odpovídá na opakované dotazy podle vašich směrnic a manuálů, i hlasem.', ic: 'chat' },
-      panel: { t: 'Panel služeb (Panel3)', d: 'Rozcestník na jídelnu, parkování, personální systém nebo další firemní odkazy.', ic: 'grid' },
-      ewa: { t: 'Výběr mzdy jako benefit', d: 'Zaměstnanci si vyberou část odpracované mzdy. Firma po implementaci neplatí nic měsíčně.', ic: 'wallet' },
-      dokumenty: { t: 'Dokumenty', d: 'Výplatní pásky, smlouvy a směrnice v mobilu, bez tisku a rozdávání.', ic: 'doc' }
-    };
-    var ICON = {
-      bell: '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
-      spark: '<path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"/>',
-      chat: '<path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.5 8.5 0 1 1 16.1-3.8z"/>',
-      grid: '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
-      wallet: '<rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="2.5"/>',
-      doc: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>'
-    };
-    var SIZE = { s: 'do 100', m: '100–500', l: '500–2 000', xl: '2 000+' };
-    var render = function () {
-      var mods = ['komunikace', 'dokumenty'];
-      var need = state.need;
-      var gen = need.indexOf('email') > -1 || need.indexOf('smeny') > -1 || state.obor === 'vyroba' && need.indexOf('smeny') > -1;
-      var asis = need.indexOf('hr') > -1;
-      if (gen) mods.push('generator');
-      if (asis || gen) mods.push('asistent');
-      if (need.indexOf('odkazy') > -1) mods.push('panel');
-      if (need.indexOf('benefit') > -1 || need.indexOf('fluktuace') > -1) mods.push('ewa');
-      var pkg = gen ? 'komplet' : asis ? 'asistent' : 'zaklad';
-      var monthly = PRICE[pkg].monthly + (mods.indexOf('panel') > -1 ? PRICE.panel : 0);
-      $('[data-o="cfgPkg"]', cfg).textContent = 'Balíček ' + PRICE[pkg].name + (mods.indexOf('ewa') > -1 ? ' + výběr mzdy' : '');
-      $('[data-o="cfgSize"]', cfg).textContent = SIZE[state.vel] + ' zaměstnanců';
-      $('.mods', cfg).innerHTML = mods.map(function (k) {
-        var m = MOD[k];
-        return '<li><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true">' + ICON[m.ic] + '</svg></span><div><b>' + m.t + '</b><span>' + m.d + '</span></div></li>';
-      }).join('');
-      $('[data-o="cfgPkgPrice"]', cfg).textContent = PRICE[pkg].monthly ? fmt(PRICE[pkg].monthly) + ' Kč' : '0 Kč';
-      var pr = $('[data-o="cfgPanel"]', cfg); pr.parentNode.hidden = mods.indexOf('panel') < 0; pr.textContent = fmt(PRICE.panel) + ' Kč';
-      var ew = $('[data-o="cfgEwa"]', cfg); ew.parentNode.hidden = mods.indexOf('ewa') < 0;
-      $('[data-o="cfgTotal"]', cfg).textContent = fmt(monthly) + ' Kč';
-      $('[data-cfg-link]', cfg).href = 'kontakt.html?segment=pink&zdroj=konfigurator&obor=' + state.obor + '&velikost=' + state.vel + '&balicek=' + pkg + '&moduly=' + mods.join(',');
-    };
-    $$('[data-group]', cfg).forEach(function (grp) {
-      var key = grp.getAttribute('data-group'), multi = grp.hasAttribute('data-multi');
-      $$('.opt', grp).forEach(function (b) {
-        var v = b.getAttribute('data-v');
-        var sel = multi ? state[key].indexOf(v) > -1 : state[key] === v;
-        b.setAttribute('aria-pressed', String(sel));
-        b.addEventListener('click', function () {
-          if (multi) {
-            var i = state[key].indexOf(v);
-            if (i > -1) state[key].splice(i, 1); else state[key].push(v);
-            b.setAttribute('aria-pressed', String(i < 0));
-          } else {
-            state[key] = v; $$('.opt', grp).forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
-          }
-          render();
-        });
-      });
-    });
-    render();
-  }
-
   /* ---------- kontakt: předvyplnění z kalkulačky / konfigurátoru ---------- */
   var form = $('[data-contact]');
   if (form) {
@@ -264,6 +145,8 @@
     if (p.get('zdroj') === 'konfigurator')
       msg.push('Z konfigurátoru: balíček ' + (PK[p.get('balicek')] || '') + ', moduly: ' + (p.get('moduly') || '').split(',').map(function (k) { return MN[k] || k; }).join(', ') + '.');
     if (!p.get('zdroj') && PK[p.get('balicek')]) msg.push('Zajímá mě balíček ' + PK[p.get('balicek')] + '.');
+    if (p.get('navrh')) msg.push('Spočítal(a) jsem si orientační cenu: ' + p.get('navrh') + '.');
+    var zj = p.get('zajem'); if (zj) { var zr = $('input[name="typ"][value="' + zj + '"]', form); if (zr) zr.checked = true; }
     if (msg.length) { var t = $('textarea', form); t.value = msg.join('\n') + '\n'; }
     /* obor = klasifikace leadu: pink (HR) · blue (servis) · white (obchodní sítě) · jine */
     var segIn = $$('input[name="segment"]', form);
@@ -549,4 +432,311 @@
   function stop() { clearInterval(timer); timer = null; cs.classList.remove('auto'); }
   items.forEach(function (it, j) { it.querySelector('button').addEventListener('click', function () { stop(); set(j); }); });
   if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) start(); else stop(); }); }, { threshold: 0.4 }).observe(cs);
+})();
+
+/* ======================================================
+   CENÍK: kalkulačka pro HR, servis a obchodní sítě
+   Ceny bez DPH. Servis a sítě podle návrhu ceníku z 2. 11. 2026.
+   ====================================================== */
+(function () {
+  'use strict';
+  var roots = document.querySelectorAll('[data-pricecalc]');
+  if (!roots.length) return;
+  var ANNUAL = 0.8; /* 12 měsíců předem: −20 % */
+  var nf = function (n, dec) { return n.toLocaleString('cs-CZ', { minimumFractionDigits: dec || 0, maximumFractionDigits: dec || 0 }).replace(/\s/g, ' '); };
+  var kc = function (n, dec) { return nf(n, dec) + ' Kč'; };
+  var esc = function (t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var CONTACT = { hr: 'pink', servis: 'blue', sit: 'white' };
+  var ICO = {
+    AI: '<path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.5 8.5 0 1 1 16.1-3.8z"/>',
+    DOC: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>',
+    VID: '<rect x="2" y="5" width="15" height="14" rx="2"/><path d="m17 10 5-3v10l-5-3"/>',
+    INFO: '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
+    START: '<path d="M4.5 16.5c-1.5 1.3-2 5-2 5s3.7-.5 5-2c.7-.8.7-2.1-.1-2.9a2.2 2.2 0 0 0-2.9-.1z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.9A12.9 12.9 0 0 1 22 2c0 2.7-.8 7.5-6 11a22.4 22.4 0 0 1-4 2z"/>',
+    HUB: '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
+    GEN: '<path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"/>',
+    EWA: '<rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="2.5"/>'
+  };
+
+  /* ---------- definice segmentů ---------- */
+  var SEG = {
+    hr: {
+      tab: 'HR a zaměstnanci', dot: 'pink',
+      title: 'Aplikace pro HR a zaměstnance',
+      steps: [
+        { key: 'vel', t: 'Kolik máte zaměstnanců', opts: [['s', 'do 100'], ['m', '101–500'], ['l', '501–2 000'], ['xl', '2 001+']] },
+        { key: 'need', t: 'O co máte zájem', multi: true, opts: [['komunikace', 'Interní komunikace a novinky'], ['generator', 'Novinky na míru v Generátoru'], ['asistent', 'Textový a hlasový AI asistent'], ['dokumenty', 'Dokumenty v mobilu'], ['panel', 'Rozcestník firemních služeb'], ['ewa', 'Výběr mzdy jako benefit']] }
+      ],
+      def: { obor: 'vyroba', vel: 'm', zavody: 1, need: ['komunikace', 'asistent'], pay: 'm' }
+    },
+    servis: {
+      tab: 'Servis a terén', dot: 'blue',
+      title: 'AI servisní asistent',
+      steps: [
+        { key: 'presetN', t: 'Kolik máte zaměstnanců', opts: [['20', '20'], ['40', '40'], ['100', '100'], ['200', '200'], ['500', '500'], ['1000', '1 000'], ['2500', '2 500']] },
+        { key: 'need', t: 'O co máte zájem', multi: true, opts: [['manualy', 'Manuály a know-how na jednom místě'], ['asistent', 'Textový a hlasový AI asistent'], ['video', 'Videonávody a školení'], ['novinky', 'Technické novinky'], ['rozcestnik', 'Rozcestník pro vaše služby'], ['ewa', 'Výběr mzdy pro zaměstnance']] }
+      ],
+      def: { obor: 'stroje', vel: 'm', presetN: '200', n: 200, need: ['manualy', 'asistent'], pay: 'm' }
+    },
+    sit: {
+      tab: 'Obchodní sítě', dot: 'white',
+      title: 'AI asistent pro obchodní sítě',
+      steps: [
+        { key: 'presetN', t: 'Kolik máte zaměstnanců', opts: [['25', '25'], ['50', '50'], ['100', '100'], ['200', '200'], ['500', '500'], ['1000', '1 000']] },
+        { key: 'need', t: 'O co máte zájem', multi: true, opts: [['produkty', 'Produkty a postupy na jednom místě'], ['asistent', 'Textový a hlasový AI asistent'], ['kampane', 'Kampaně a obchodní novinky'], ['novacci', 'Školení a start nováčků'], ['nastroje', 'Rozcestník portálů a nástrojů']] }
+      ],
+      def: { obor: 'kosmetika', presetN: '200', n: 200, need: ['produkty', 'asistent'], pay: 'm' }
+    }
+  };
+
+  /* ---------- výpočty ---------- */
+  var HR_PKG = { zaklad: ['Základ', 0], asistent: ['Asistent', 2475], komplet: ['Komplet', 6250] };
+  var HR_PANEL = 6500, HR_ZAVOD = 12500;
+  var HR_MOD = {
+    komunikace: ['INFO', 'Interní komunikace a novinky', 'Zprávy a upozornění přímo do telefonu, i lidem bez firemního e-mailu.'],
+    dokumenty: ['DOC', 'Dokumenty', 'Výplatní pásky, smlouvy a směrnice v mobilu.'],
+    generator: ['GEN', 'PalmApp Generátor a Stories', 'Z krátkého zadání novinky pro každé oddělení a jazyk, ve stylu vaší firmy.'],
+    asistent: ['AI', 'AI asistent hlasem i textem', 'Odpovídá na opakované dotazy podle vašich směrnic.'],
+    panel: ['HUB', 'Panel služeb', 'Jídelna, parkování a firemní systémy na jednom místě.'],
+    ewa: ['EWA', 'Výběr mzdy jako benefit', 'Firma po implementaci neplatí nic měsíčně.']
+  };
+  var SIZE_L = { s: 'do 100', m: '101–500', l: '501–2 000', xl: '2 001+' };
+  var SIZE_K = { s: 'Firma do 100 zaměstnanců', m: 'Firma se 101–500 zaměstnanci', l: 'Firma s 501–2 000 zaměstnanci', xl: 'Firma s více než 2 000 zaměstnanci' };
+
+  var SV_BAND = { s: { max: 100, rate: 69, od: true, impl: 8900 }, m: { max: 500, rate: 59, od: false, impl: 17900 }, l: { max: 2000, rate: 49, od: true, impl: 38900 }, xl: { max: Infinity, rate: 39, od: true, impl: 59000 } };
+  var SV_AI = {
+    stroje: 'Odpovědi ze servisních manuálů strojů, s dohledatelným zdrojem.',
+    klima: 'Chybové kódy a postupy pro jednotky a čerpadla, s dohledatelným zdrojem.',
+    elektro: 'Bezpečné postupy a poruchy střídačů i rozvaděčů, s dohledatelným zdrojem.',
+    budovy: 'Plány údržby a postupy pro technologie budov, s dohledatelným zdrojem.',
+    zdravotni: 'Servisní postupy a kontroly přístrojů, s dohledatelným zdrojem.',
+    jine: 'Odpovědi podle vaší dokumentace, s dohledatelným zdrojem.'
+  };
+  var SIT_AI = {
+    kosmetika: 'Složení, použití a aktuální kampaně z podkladů centrály.',
+    dum: 'Varianty, lhůty a obchodní pravidla pro dveře, okna, kuchyně a podlahy.',
+    auto: 'Produktové listy, sezónní akce a reklamační postupy.',
+    technika: 'Sortiment, parametry a schválené odpovědi zákazníkům.',
+    energie: 'Schválené nabídky, kampaně a postupy sjednání.',
+    potraviny: 'Produktové listy, sortiment a postupy objednávání.',
+    reality: 'Checklisty k zakázkám, obchodní postupy a pravidla centrály.',
+    finance: 'Schválené metodiky, produktové informace a procesní postupy.',
+    jine: 'Produktové informace a pravidla z vašich podkladů.'
+  };
+  var sitMonthly = function (n) {
+    var ext = 0, a = Math.max(0, Math.min(n, 100) - 25), b = Math.max(0, Math.min(n, 500) - 100), c = Math.max(0, n - 500);
+    ext = a * 59 + b * 49 + c * 29;
+    return { base: 8900, ext: ext, extUsers: Math.max(0, n - 25), total: 8900 + ext };
+  };
+
+  var interests = function (seg, st) {
+    var step = SEG[seg].steps.filter(function (x) { return x.key === 'need'; })[0], lab = step.opts.filter(function (o) { return st.need.indexOf(o[0]) > -1; }).map(function (o) { return o[1].charAt(0).toLowerCase() + o[1].slice(1); });
+    return lab.length ? ' · zájem: ' + lab.join(', ') : '';
+  };
+  var compute = {
+    hr: function (st) {
+      var need = st.need, mods = ['komunikace', 'dokumenty'];
+      var gen = need.indexOf('generator') > -1;
+      var asis = need.indexOf('asistent') > -1;
+      if (gen) mods.push('generator');
+      if (asis || gen) mods.push('asistent');
+      if (need.indexOf('panel') > -1) mods.push('panel');
+      if (need.indexOf('ewa') > -1) mods.push('ewa');
+      var pkg = gen ? 'komplet' : asis ? 'asistent' : 'zaklad';
+      var z = Math.max(1, st.zavody | 0);
+      var lines = [['Balíček ' + HR_PKG[pkg][0], HR_PKG[pkg][1]]];
+      if (mods.indexOf('panel') > -1) lines.push(['Panel služeb', HR_PANEL]);
+      if (z > 1) lines.push(['Další závody: ' + (z - 1) + ' × ' + kc(HR_ZAVOD), (z - 1) * HR_ZAVOD]);
+      var total = lines.reduce(function (s, l) { return s + l[1]; }, 0);
+      if (mods.indexOf('ewa') > -1) lines.push(['Výběr mzdy', 0, '0 Kč měsíčně']);
+      var impl = mods.indexOf('ewa') > -1 ? [['Implementace výběru mzdy', '20 000 Kč <span class="ph">OVĚŘIT</span>'], ['Zavedení a školení', '<span class="ph">[DOPLNIT]</span>']] : [['Zavedení a školení', '<span class="ph">[DOPLNIT]</span>']];
+      return {
+        kicker: SIZE_K[st.vel] + ' · ' + z + (z === 1 ? ' závod' : z < 5 ? ' závody' : ' závodů'),
+        name: 'Balíček ' + HR_PKG[pkg][0] + (mods.indexOf('ewa') > -1 ? ' + výběr mzdy' : ''),
+        tag: 'Moduly podle toho, co řešíte',
+        list: mods.map(function (k) { var m = HR_MOD[k]; return { ic: m[0], t: m[1], d: m[2], on: false }; }),
+        lines: lines, total: total, od: false, impl: impl,
+        foot: '<b>Ceny bez DPH za jeden závod.</b> Každý další závod 12\u00a0500\u00a0Kč měsíčně. Zapnete jen moduly, které potřebujete.',
+        summary: 'HR · ' + SIZE_L[st.vel] + ' zaměstnanců · ' + z + ' záv. · balíček ' + HR_PKG[pkg][0] + (mods.indexOf('panel') > -1 ? ' + Panel služeb' : '') + (mods.indexOf('ewa') > -1 ? ' + výběr mzdy' : '')
+      };
+    },
+    servis: function (st) {
+      var b = SV_BAND[st.vel], n = Math.max(1, st.n | 0), need = st.need;
+      var name = n <= 40 ? 'Servisní tým' : n <= 250 ? 'Servis napříč firmou' : n <= 2000 ? 'Rozsáhlé nasazení' : 'Individuální nabídka';
+      var hl = { AI: need.indexOf('manualy') > -1 || need.indexOf('dotazy') > -1, DOC: need.indexOf('manualy') > -1, VID: need.indexOf('zauceni') > -1, INFO: need.indexOf('postupy') > -1 };
+      return {
+        kicker: SIZE_K[st.vel] + ' · ' + nf(n) + ' ' + (n === 1 ? 'uživatel' : n < 5 ? 'uživatelé' : 'uživatelů'),
+        name: name, tag: 'Jedna cena pro všechny vaše závody',
+        list: [
+          { ic: 'AI', t: 'Hlasový a textový AI asistent', d: '', on: hl.AI },
+          { ic: 'DOC', t: 'Manuály a firemní know-how', d: 'Schválené návody, postupy a odpovědi specialistů.', on: hl.DOC },
+          { ic: 'VID', t: 'Videonávody a krátká školení', d: 'Názorná pomoc při práci i zaškolování nových kolegů.', on: hl.VID },
+          { ic: 'INFO', t: 'Technické aktuality a rozcestník', d: 'Změny postupů, důležité kontakty a firemní odkazy.', on: hl.INFO }
+        ],
+        rate: b.rate, lines: need.indexOf('ewa') > -1 ? [['Výběr mzdy', 0, '0\u00a0Kč měsíčně']] : [], total: n * b.rate, od: b.od,
+        impl: [['Zavedení jednorázově', kc(b.impl)]].concat(need.indexOf('ewa') > -1 ? [['Implementace výběru mzdy', '20\u00a0000\u00a0Kč <span class="ph">OVĚŘIT</span>']] : []),
+        integ: need.indexOf('integrace') > -1,
+        foot: '<b>Cena platí společně pro všechny závody a pobočky vaší firmy.</b> Za jednotlivé závody se paušál nenásobí. Standardní orientační ceny bez DPH, individuální zvýhodnění rádi probereme podle rozsahu spolupráce.',
+        summary: 'Servis · firma ' + SIZE_L[st.vel] + ' zaměstnanců · ' + n + ' uživatelů · ' + name
+      };
+    },
+    sit: function (st) {
+      var n = Math.max(1, st.n | 0), p = sitMonthly(n), need = st.need;
+      var hl = { AI: need.indexOf('produkty') > -1 || need.indexOf('centrala') > -1, INFO: need.indexOf('kampane') > -1, START: need.indexOf('novacci') > -1, HUB: need.indexOf('nastroje') > -1 };
+      var lines = [['Základ: 25 uživatelů + 3 správci', p.base]];
+      if (p.extUsers) lines.push(['Rozšiřující licence: ' + nf(p.extUsers) + ' uživatelů', p.ext]);
+      return {
+        kicker: 'Pro ' + nf(n) + ' uživatelů sítě + 3 správce obsahu',
+        name: 'Zázemí pro celou síť', tag: 'Jedna licence pro centrálu i obchodní partnery',
+        list: [
+          { ic: 'AI', t: 'AI odpovědi k produktům a postupům', d: '', on: hl.AI },
+          { ic: 'INFO', t: 'Kampaně a obchodní novinky', d: 'Krátká sdělení a Stories propojí centrálu s celou sítí.', on: hl.INFO },
+          { ic: 'START', t: 'Rychlejší start prodejního týmu', d: 'Produktové znalosti a školení pro nové i zkušené členy.', on: hl.START },
+          { ic: 'HUB', t: 'Nástroje a kontakty na jednom místě', d: 'Rozcestník partnerských portálů, vzdělávání a podpory.', on: hl.HUB }
+        ],
+        lines: lines, total: p.total, od: false,
+        impl: [['Standardní zavedení jednorázově od', kc(9900)]],
+        integ: need.indexOf('integrace') > -1,
+        foot: '<b>Společná cena pro celou síť, prodejní místa a partnerské týmy.</b> Jejich počet cenu nenásobí. Standardní orientační ceny bez DPH, individuální zvýhodnění rádi probereme podle rozsahu spolupráce.',
+        summary: 'Obchodní síť · ' + n + ' uživatelů'
+      };
+    }
+  };
+
+  /* ---------- vykreslení ---------- */
+  var stepHtml = function (seg, i, s, st) {
+    var chips = '<div class="opts" role="group" aria-label="' + esc(s.t) + '">' + s.opts.map(function (o) {
+      var on = s.multi ? st[s.key].indexOf(o[0]) > -1 : st[s.key] === o[0];
+      return '<button type="button" class="opt" data-k="' + s.key + '" data-v="' + o[0] + '"' + (s.multi ? ' data-multi' : '') + ' aria-pressed="' + on + '">' + esc(o[1]) + '</button>';
+    }).join('') + '</div>';
+    var num = '';
+    if (s.num) {
+      var inp = '<input id="pc-' + seg + '-' + s.num.key + '" type="number" inputmode="numeric" min="' + s.num.min + '" max="' + s.num.max + '" data-num="' + s.num.key + '" value="' + st[s.num.key] + '"' + (s.num.aria ? ' aria-label="' + esc(s.num.aria) + '"' : '') + '>';
+      num = s.num.label ? '<div class="pc-num"><label for="pc-' + seg + '-' + s.num.key + '">' + esc(s.num.label) + '</label>' + inp + '</div>' : '<div class="pc-num pc-num--solo">' + inp + '</div>';
+    }
+    return '<div class="cfg-step"><h3><span class="n">' + (i + 1) + '</span>' + esc(s.t) + (s.multi ? '<span class="pc-sub">(vyberte vše, co platí)</span>' : '') + '</h3>' +
+      (s.numFirst ? num + chips : chips + num) + '</div>';
+  };
+
+  var resHtml = function (seg, st) {
+    var r = compute[seg](st), f = st.pay === 'y' ? ANNUAL : 1, od = r.od ? 'od ' : '';
+    var pay = '<div class="pc-pay" role="group" aria-label="Způsob platby"><button type="button" data-pay="m" aria-pressed="' + (st.pay === 'm') + '">Měsíční platba</button><button type="button" data-pay="y" aria-pressed="' + (st.pay === 'y') + '">12 měsíců předem <em>−20 %</em></button></div>';
+    var lines = r.lines.map(function (l) { return '<div><span>' + esc(l[0]) + '</span><b>' + (l[2] || kc(l[1] * f)) + '</b></div>'; }).join('');
+    var tot = r.total * f, sub;
+    if (seg === 'servis') {
+      sub = f < 1 ? od + kc(r.rate * f, 2) + ' / uživatel. Roční úhrada předem ' + od + kc(tot * 12) + '.' : od + kc(r.rate) + ' / uživatel. Při roční platbě ' + od + kc(r.total * ANNUAL) + ' / měsíc.';
+    } else if (r.total) {
+      sub = f < 1 ? 'Roční úhrada předem ' + od + kc(tot * 12) + '. Standardně ' + od + kc(r.total) + ' měsíčně.' : 'Při roční platbě ' + od + kc(r.total * ANNUAL) + ' / měsíc. Roční úhrada předem ' + od + kc(r.total * ANNUAL * 12) + '.';
+    } else { sub = 'Základní balíček je zdarma. Platíte jen moduly navíc.'; }
+    var impl = r.impl.map(function (l) { return '<div class="pc-impl"><span>' + esc(l[0]) + '</span><b>' + l[1] + '</b></div>'; }).join('');
+    var integ = r.integ ? '<p class="pc-integ">Napojení na vaše systémy vymezíme a naceníme zvlášť.</p>' : '';
+    var href = 'kontakt.html?segment=' + CONTACT[seg] + '&zdroj=cenik&navrh=' + encodeURIComponent(r.summary + interests(seg, st) + ' · orientačně ' + od + kc(tot).replace(/ /g, ' ') + ' měsíčně' + (f < 1 ? ' při roční platbě' : ''));
+    return pay +
+      (lines ? '<div class="price-sum pc-lines">' + lines + '</div>' : '') +
+      '<div class="pc-total"><span>' + (f < 1 ? 'Měsíčně při roční platbě' : 'Orientačně měsíčně') + '</span><b>' + od + kc(tot) + '</b></div><p class="pc-subt">' + sub + '</p>' +
+      impl + integ + '<a class="btn btn--primary btn--lg" href="' + href + '">Domluvit demo s tímto návrhem</a><p class="pc-foot">' + r.foot + '</p>';
+  };
+
+  Array.prototype.forEach.call(roots, function (root) {
+    var tabs = root.hasAttribute('data-tabs');
+    var states = {};
+    Object.keys(SEG).forEach(function (k) { states[k] = JSON.parse(JSON.stringify(SEG[k].def)); });
+    var seg = root.getAttribute('data-pricecalc');
+    if (tabs) {
+      var p = new URLSearchParams(location.search).get('segment'), h = location.hash.replace('#', '');
+      var fromQ = { pink: 'hr', blue: 'servis', white: 'sit' }[p] || (SEG[p] ? p : '');
+      if (SEG[h]) seg = h; else if (fromQ) seg = fromQ;
+    }
+    var panels = document.querySelectorAll('[data-seg-panel]');
+    var draw = function () {
+      var st = states[seg], d = SEG[seg];
+      var off = tabs ? 1 : 0;
+      var oborHtml = tabs ? '<div class="cfg-step"><h3><span class="n">1</span>Obor</h3><div class="opts" role="group" aria-label="Obor">' + Object.keys(SEG).map(function (k) {
+        return '<button type="button" class="opt" data-tab="' + k + '" aria-pressed="' + (k === seg) + '">' + SEG[k].tab + '</button>';
+      }).join('') + '</div></div>' : '';
+      root.innerHTML = '<div class="cfg pc"><div class="pc-steps">' + oborHtml + d.steps.map(function (s, i) { return stepHtml(seg, i + off, s, st); }).join('') +
+        '</div><aside class="cfg-res pc-res" aria-live="polite">' + resHtml(seg, st) + '</aside></div>';
+      Array.prototype.forEach.call(panels, function (pn) { pn.hidden = pn.getAttribute('data-seg-panel') !== seg; });
+    };
+    var redrawRes = function () { root.querySelector('.pc-res').innerHTML = resHtml(seg, states[seg]); };
+    root.addEventListener('click', function (e) {
+      var t = e.target.closest('button'); if (!t || !root.contains(t)) return;
+      var st = states[seg];
+      if (t.hasAttribute('data-tab')) { seg = t.getAttribute('data-tab'); draw(); if (history.replaceState) history.replaceState(null, '', '#' + seg); return; }
+      if (t.hasAttribute('data-pay')) { st.pay = t.getAttribute('data-pay'); redrawRes(); return; }
+      var k = t.getAttribute('data-k'); if (!k) return;
+      var v = t.getAttribute('data-v');
+      if (t.hasAttribute('data-multi')) {
+        var i = st[k].indexOf(v); if (i > -1) st[k].splice(i, 1); else st[k].push(v);
+        t.setAttribute('aria-pressed', String(i < 0));
+      } else {
+        st[k] = v;
+        Array.prototype.forEach.call(t.parentNode.querySelectorAll('.opt'), function (x) { x.setAttribute('aria-pressed', String(x === t)); });
+        if (k === 'presetN') st.n = +v;
+        if (seg === 'servis') {
+          if (k === 'presetN') st.vel = st.n <= 100 ? 's' : st.n <= 500 ? 'm' : st.n <= 2000 ? 'l' : 'xl';
+          draw(); return;
+        }
+      }
+      redrawRes();
+    });
+    root.addEventListener('input', function (e) {
+      var t = e.target; if (!t.hasAttribute('data-num')) return;
+      var st = states[seg], k = t.getAttribute('data-num'), v = parseInt(t.value, 10);
+      if (!(v > 0)) return;
+      v = Math.min(v, +t.max); st[k] = v;
+      if (seg === 'sit') { st.presetN = String(v); Array.prototype.forEach.call(root.querySelectorAll('[data-k="presetN"]'), function (x) { x.setAttribute('aria-pressed', String(+x.getAttribute('data-v') === v)); }); }
+      if (seg === 'servis' && k === 'n') {
+        var band = v <= 100 ? 's' : v <= 500 ? 'm' : v <= 2000 ? 'l' : 'xl';
+        var order = ['s', 'm', 'l', 'xl'];
+        if (order.indexOf(band) > order.indexOf(st.vel)) { st.vel = band; Array.prototype.forEach.call(root.querySelectorAll('[data-k="vel"]'), function (x) { x.setAttribute('aria-pressed', String(x.getAttribute('data-v') === band)); }); }
+      }
+      redrawRes();
+    });
+    root.addEventListener('change', function (e) { var t = e.target; if (t.hasAttribute('data-num')) t.value = states[seg][t.getAttribute('data-num')]; });
+    draw();
+  });
+})();
+
+/* ---------- obchodní sítě: kalkulačka zátěže centrály ---------- */
+(function () {
+  var c = document.querySelector('[data-netcalc]'); if (!c) return;
+  var kc = function (v) { return Math.round(v).toLocaleString('cs-CZ').replace(/\s/g, ' ') + ' Kč'; };
+  var val = function (n) { return parseFloat(c.querySelector('[name="' + n + '"]').value) || 0; };
+  var set = function (k, v) { var el = c.querySelector('[data-no="' + k + '"]'); if (el) el.textContent = v; };
+  function upd() {
+    c.querySelectorAll('input[type=range]').forEach(function (i) {
+      i.style.setProperty('--fill', ((i.value - i.min) / (i.max - i.min) * 100) + '%');
+      var o = c.querySelector('output[for="' + i.id + '"]');
+      if (o) o.textContent = i.dataset.fmt === 'kc' ? kc(+i.value) : (+i.value).toLocaleString('cs-CZ') + (i.dataset.suf || '');
+    });
+    var q = val('lidi') * val('dotazy') * 4.33, hours = q * val('min') / 60, month = hours * val('rate');
+    set('month', kc(month)); set('hours', Math.round(hours).toLocaleString('cs-CZ') + ' h');
+    set('q', Math.round(q).toLocaleString('cs-CZ')); set('half', kc(month / 2)); set('year', kc(month * 12));
+  }
+  c.addEventListener('input', upd); upd();
+})();
+
+/* ---------- oborové stránky: sticky telefon se kroky ---------- */
+(function () {
+  var roots = document.querySelectorAll('[data-fstory]'); if (!roots.length) return;
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  Array.prototype.forEach.call(roots, function (root) {
+    var steps = root.querySelectorAll('.fs-step'), screens = root.querySelectorAll('.fs-screen'), sats = root.querySelectorAll('.fs-sats'), rail = root.querySelector('.fs-rail'), links = root.querySelectorAll('.fs-rail a'), active = -1, ticking = false;
+    var set = function (i) {
+      if (i === active) return; active = i;
+      [steps, sats, links].forEach(function (list) { Array.prototype.forEach.call(list, function (el, k) { el.classList.toggle('on', k === i); }); });
+      Array.prototype.forEach.call(screens, function (el, k) { el.classList.toggle('on', k === i); el.classList.toggle('past', k < i); });
+    };
+    var upd = function () {
+      var H = window.innerHeight, mid = H / 2, best = 0, r = root.getBoundingClientRect();
+      Array.prototype.forEach.call(steps, function (s, k) { if (s.getBoundingClientRect().top < mid) best = k; });
+      set(best);
+      if (rail && !reduced) rail.style.setProperty('--p', Math.max(0, Math.min(1, -r.top / (r.height - H))).toFixed(4));
+      ticking = false;
+    };
+    window.addEventListener('scroll', function () { if (!ticking) { requestAnimationFrame(upd); ticking = true; } }, { passive: true });
+    window.addEventListener('resize', upd);
+    set(0); upd();
+  });
 })();

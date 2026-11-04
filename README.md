@@ -18,6 +18,7 @@ cenik.html               Ceník + kalkulačka / konfigurátor
 kontakt.html             Kontaktní formulář
 assets/firma.css         Styly (všechny stránky kromě zamestnanec.html)
 assets/firma.js          Navigace, animace, kalkulačka, předvyplnění formuláře
+assets/img/               Screeny aplikace a fotky (WebP)
 ```
 
 ## Nasazení
@@ -31,13 +32,20 @@ assets/firma.js          Navigace, animace, kalkulačka, předvyplnění formul�
 - Pozor: `index.html` přepíše stávající úvodní stránku, pokud se nahrává do kořene stávajícího repa.
 - Fonty se načítají z Google Fonts (Inter, Inter Tight).
 
+## Kalkulačka ceníku
+
+- Logika i ceny jsou v `assets/firma.js`, blok „CENÍK: kalkulačka“ (objekty `SEG`, `SV_BAND`, `sitMonthly`, `HR_PKG`).
+- Vkládá se prvkem `<div data-pricecalc="hr|servis|sit">`. Na `cenik.html` má navíc `data-tabs` (přepínání segmentů, kotvy `#hr`, `#servis`, `#sit`).
+- Servis a obchodní sítě podle návrhu ceníku z 2. 11. 2026. HR ceny převzaté z předchozí verze webu.
+
 ## Co je potřeba dořešit před spuštěním
 
 1. **Kontaktní formulář (`kontakt.html`) zatím nikam neodesílá.** Po odeslání ukáže „Děkujeme“, ale data se zahodí.
-   Napojení: `assets/firma.js`, blok `form.addEventListener('submit', …)` (označený `TODO`).
+   Napojení: `assets/firma.js`, blok `form.addEventListener('submit', …)` (označený `TODO`). Formulář posílá pole `typ` (demo / pilot), `segment` a předvyplněnou zprávu z kalkulačky.
 2. **Formulář „Doporučte nám firmu“ (`zamestnanec.html`)** také nikam neodesílá (`onsubmit="return false"`).
 3. **Placeholdery v textu** se na webu zobrazují žlutě zvýrazněné (třídy `.ph` a `.ph-num`). Vyhledejte `[X]`, `[DOPLNIT`, `OVĚŘIT`:
-   - `index.html`, `hr.html` – statistiky výběru mzdy (`[X] %`, `[X] výběrů`, `[období]`)
-   - `vyber-mzdy.html` – statistiky, cena implementace (20 000 Kč, ověřit), FAQ
-   - `zamestnanec.html` – přihlášení, obnova hesla, „zdarma [OVĚŘIT]“
-4. **Mockupy** jsou zatím šedé boxy s textem „Mockup · …“ (záměrně, doplní se později).
+   - `index.html`, `hr.html` – statistiky výběru mzdy
+   - `vyber-mzdy.html` – statistiky, cena implementace, FAQ
+   - `zamestnanec.html` – přihlášení, obnova hesla
+   - `cenik.html` + kalkulačka HR – implementace výběru mzdy (OVĚŘIT), zavedení HR (DOPLNIT)
+4. **Mockupy:** screeny aplikace a fotky jsou v `assets/img/` (WebP). Zbývající šedé boxy „Mockup · …“ čekají na podklady (administrace, servisní a obchodní asistent, pozvánka).

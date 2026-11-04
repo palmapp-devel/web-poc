@@ -462,6 +462,34 @@ footer{padding:40px 0 48px;color:var(--muted);font-size:14px}
   .drawer .btn{margin-top:20px;width:100%;justify-content:center;border-bottom:0;color:#fff;min-height:52px;background:#04349F;border-radius:999px}
   .nav.stuck .nav-inner{padding:0 8px 0 18px}
 }
+
+/* reálné screeny */
+.has-img{padding:0 !important;overflow:hidden}
+.has-img img{display:block;width:100%;height:100%;object-fit:cover;object-position:top center}
+.screen.has-img{background:#fff}
+.phone-ph.has-img{background:#fff}
+.m-media.has-img{height:auto;padding:32px 0 0 !important;align-items:flex-end}
+.m-media.has-img img{width:min(260px,70%);height:auto;border-radius:28px 28px 0 0;box-shadow:0 20px 40px -20px rgba(5,13,36,.35)}
+.story-pin .sats{display:none}
+
+/* rámeček iPhone 16 (displej 393 × 852) */
+.stage{width:auto;height:min(700px,80vh);aspect-ratio:413/872}
+.device{padding:2.42%;border-radius:15.7%/7.45%}
+.device-screen{border-radius:14%/6.46%;container-type:inline-size}
+.device-screen::after,.phone-ph.has-img::after{content:"";position:absolute;z-index:5;left:34.1cqw;top:2.8cqw;width:31.8cqw;height:9.4cqw;border-radius:999px;background:#000;pointer-events:none}
+.screen.has-img img{object-fit:fill}
+.phone-ph.has-img{position:relative;container-type:inline-size;border:8px solid #0A0F1F;border-bottom:0;border-radius:52px 52px 0 0;background:#fff}
+.phone-ph.has-img img{height:auto;object-fit:initial}
+.m-media.has-img img{border:8px solid #0A0F1F;border-bottom:0;border-radius:44px 44px 0 0}
+.phone-ph.has-img{display:block}
+
+/* hero: plovoucí telefon bez pozadí */
+.hero-visual{align-items:center}
+.hero-phone{height:min(640px,100%);display:flex;align-items:center;justify-content:center}
+.hero-phone img{height:100%;width:auto;max-width:100%;object-fit:contain;filter:drop-shadow(0 50px 60px rgba(0,0,0,.55));animation:phoneFloat 6s ease-in-out infinite}
+@keyframes phoneFloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-14px) rotate(.6deg)}}
+@media (prefers-reduced-motion:reduce){.hero-phone img{animation:none}}
+@media (max-width:900px){.hero-phone{height:100%}}
 </style>
 </head>
 <body>
@@ -518,7 +546,7 @@ footer{padding:40px 0 48px;color:var(--muted);font-size:14px}
         <p class="note" style="--d:420ms" data-reveal>Přihlásíte se údaji od svého zaměstnavatele.</p>
       </div>
       <div class="hero-visual">
-        <div class="phone-ph" style="--d:250ms" data-reveal="rise">Mockup · Přehled</div>
+        <div class="hero-phone" style="--d:250ms" data-reveal="rise"><img src="assets/img/phone-floating.webp" alt="Aplikace PalmApp v telefonu: přehled s asistentem, službami a novinkami" width="881" height="1329" fetchpriority="high"></div>
         <div class="fw fw--doc" aria-hidden="true"><div data-reveal style="--d:800ms"><div class="float" style="display:flex;align-items:center;gap:14px;width:280px">
           <div class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></div>
           <div style="flex:1;min-width:0"><div style="font-weight:600;font-size:15px">Výplatní páska – říjen</div><div class="meta">Nový dokument · PDF</div></div>
@@ -556,7 +584,7 @@ footer{padding:40px 0 48px;color:var(--muted);font-size:14px}
       <div class="story-steps">
 
         <article id="dokumenty" class="story-step" data-i="0">
-          <div class="m-media">Mockup · Dokumenty</div>
+          <div class="m-media has-img is-screen"><img src="assets/img/app-portal.webp" alt="Můj portál s dokumenty, službami a kontaktem na HR" loading="lazy" decoding="async"></div>
           <div class="eyebrow">01 — Dokumenty</div>
           <h3 class="h3">Výplatní pásky a smlouvy, kdykoli je potřebujete</h3>
           <p class="lead">Všechny pracovní dokumenty máte v telefonu. Když banka nebo úřad chce potvrzení o příjmu, stáhnete ho jako PDF za pár vteřin.</p>
@@ -568,7 +596,7 @@ footer{padding:40px 0 48px;color:var(--muted);font-size:14px}
         </article>
 
         <article id="novinky" class="story-step" data-i="1">
-          <div class="m-media">Mockup · Novinky</div>
+          <div class="m-media has-img is-screen"><img src="assets/img/app-novinka.webp" alt="Detail novinky s videem v aplikaci PalmApp" loading="lazy" decoding="async"></div>
           <div class="eyebrow">02 — Novinky</div>
           <h3 class="h3">O změnách víte jako první, ne jako poslední</h3>
           <p class="lead">Oznámení, změny směn, akce i důležité informace od vedení přijdou rovnou do telefonu. Žádná nástěnka, žádný zapomenutý e-mail.</p>
@@ -580,7 +608,7 @@ footer{padding:40px 0 48px;color:var(--muted);font-size:14px}
         </article>
 
         <article id="dotazy" class="story-step" data-i="2">
-          <div class="m-media">Mockup · Pracovní dotazy</div>
+          <div class="m-media has-img is-screen"><img src="assets/img/app-chat.webp" alt="Konverzace s AI asistentem v aplikaci PalmApp" loading="lazy" decoding="async"></div>
           <div class="eyebrow">03 — Pracovní dotazy</div>
           <h3 class="h3">Odpověď hned, ne za tři dny</h3>
           <p class="lead">Kolik vám zbývá dovolené, kdy přijde výplata, co dělat při nemoci. Asistent odpovídá podle pravidel a dokumentů vaší firmy, kdykoli a česky.</p>
@@ -592,7 +620,7 @@ footer{padding:40px 0 48px;color:var(--muted);font-size:14px}
         </article>
 
         <article id="portal" class="story-step" data-i="3">
-          <div class="m-media">Mockup · Můj portál</div>
+          <div class="m-media has-img is-screen"><img src="assets/img/app-prehled.webp" alt="Přehled v aplikaci PalmApp s asistentem a novinkami" loading="lazy" decoding="async"></div>
           <div class="eyebrow">04 — Můj portál</div>
           <h3 class="h3">Firemní systémy a kontakty pohromadě</h3>
           <p class="lead">Docházka, rezervace, důležité odkazy i kontakt na HR. Přehled si sestavuje vaše firma, takže vidíte přesně to, co se u vás používá.</p>
@@ -604,7 +632,7 @@ footer{padding:40px 0 48px;color:var(--muted);font-size:14px}
         </article>
 
         <article id="mzda" class="story-step" data-i="4">
-          <div class="m-media">Mockup · Mzda</div>
+          <div class="m-media has-img is-screen"><img src="assets/img/app-mzda.webp" alt="Přehled mzdy a výběr mzdy v aplikaci PalmApp" loading="lazy" decoding="async"></div>
           <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px"><span class="eyebrow">05 — Výběr mzdy</span><span class="tag tag--sm"><span class="dot"></span>Pokud ho firma nabízí</span></div>
           <h3 class="h3">Část výplaty, když ji potřebujete</h3>
           <p class="lead">Část mzdy, kterou jste si už odpracovali, si můžete vybrat ještě před výplatním termínem. Nejde o půjčku, zbytek dostanete jako obvykle.</p>
@@ -635,11 +663,11 @@ footer{padding:40px 0 48px;color:var(--muted);font-size:14px}
         <div class="story-pin" aria-hidden="true">
           <div class="stage">
             <div class="device"><div class="device-screen">
-              <div class="screen on">Mockup · Dokumenty</div>
-              <div class="screen">Mockup · Novinky</div>
-              <div class="screen">Mockup · Pracovní dotazy</div>
-              <div class="screen">Mockup · Můj portál</div>
-              <div class="screen">Mockup · Mzda</div>
+              <div class="screen on has-img is-screen"><img src="assets/img/app-portal.webp" alt="Můj portál s dokumenty, službami a kontaktem na HR" loading="lazy" decoding="async"></div>
+              <div class="screen has-img is-screen"><img src="assets/img/app-novinka.webp" alt="Detail novinky s videem v aplikaci PalmApp" loading="lazy" decoding="async"></div>
+              <div class="screen has-img is-screen"><img src="assets/img/app-chat.webp" alt="Konverzace s AI asistentem v aplikaci PalmApp" loading="lazy" decoding="async"></div>
+              <div class="screen has-img is-screen"><img src="assets/img/app-prehled.webp" alt="Přehled v aplikaci PalmApp s asistentem a novinkami" loading="lazy" decoding="async"></div>
+              <div class="screen has-img is-screen"><img src="assets/img/app-mzda.webp" alt="Přehled mzdy a výběr mzdy v aplikaci PalmApp" loading="lazy" decoding="async"></div>
             </div></div>
 
             <div class="sats on">
