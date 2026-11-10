@@ -96,42 +96,41 @@
   };
   var demo = $('[data-demo]');
   if (demo) {
+    /* ukázka: jen přepínač hotových zpráv a skupin, bez vlastního textu a bez generování */
     var src = $('.demo-src', demo), current = 'smeny', timers = [];
-    var setPreset = function (k) {
-      current = k; src.value = DEMO[k].src;
-      $$('.pchip', demo).forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.preset === k)); });
-      $$('.outcard', demo).forEach(function (c) { c.classList.remove('live'); $('.bubble', c).textContent = 'Klikněte na „Připravit verze“.'; });
+    var type = function (el, text, delay) {
+      timers.push(setTimeout(function () {
+        if (reduced) { el.textContent = text; return; }
+        var i = 0; el.innerHTML = '<span></span><span class="caret"></span>';
+        var span = el.firstChild;
+        var tick = function () { i += 3; span.textContent = text.slice(0, i); if (i < text.length) timers.push(setTimeout(tick, 14)); else el.lastChild.remove(); };
+        tick();
+      }, delay));
     };
-    $$('.pchip', demo).forEach(function (b) { b.addEventListener('click', function () { setPreset(b.dataset.preset); }); });
+    var render = function (animate) {
+      timers.forEach(clearTimeout); timers = [];
+      var data = DEMO[current];
+      $$('.outcard', demo).filter(function (c) { return !c.hidden; }).forEach(function (c, k) {
+        c.classList.add('live');
+        if (animate) type($('.bubble', c), data.out[c.dataset.g], k * 260); else $('.bubble', c).textContent = data.out[c.dataset.g];
+      });
+    };
+    var setPreset = function (k, animate) {
+      current = k; src.textContent = DEMO[k].src;
+      $$('.pchip', demo).forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.preset === k)); });
+      render(animate);
+    };
+    $$('.pchip', demo).forEach(function (b) { b.addEventListener('click', function () { setPreset(b.dataset.preset, true); }); });
     $$('.gchip', demo).forEach(function (b) {
       b.addEventListener('click', function () {
         var on = b.getAttribute('aria-pressed') !== 'true';
         if (!on && $$('.gchip[aria-pressed="true"]', demo).length === 1) return;
         b.setAttribute('aria-pressed', String(on));
         var card = $('.outcard[data-g="' + b.dataset.g + '"]', demo); if (card) card.hidden = !on;
+        if (on && card) { card.classList.add('live'); type($('.bubble', card), DEMO[current].out[b.dataset.g], 0); }
       });
     });
-    src.addEventListener('input', function () { $$('.pchip', demo).forEach(function (b) { b.setAttribute('aria-pressed', 'false'); }); });
-    var type = function (el, text, delay) {
-      timers.push(setTimeout(function () {
-        if (reduced) { el.textContent = text; return; }
-        var i = 0; el.innerHTML = '<span></span><span class="caret"></span>';
-        var span = el.firstChild;
-        var tick = function () { i += 2; span.textContent = text.slice(0, i); if (i < text.length) timers.push(setTimeout(tick, 16)); else el.lastChild.remove(); };
-        tick();
-      }, delay));
-    };
-    $('.demo-go', demo).addEventListener('click', function () {
-      timers.forEach(clearTimeout); timers = [];
-      var data = DEMO[current];
-      var custom = !$$('.pchip[aria-pressed="true"]', demo).length;
-      $$('.outcard', demo).filter(function (c) { return !c.hidden; }).forEach(function (c, k) {
-        c.classList.add('live');
-        var text = custom ? '[Ukázka funguje s připravenými zprávami. Vlastní text v aplikaci přizpůsobí Generátor.]' : data.out[c.dataset.g];
-        type($('.bubble', c), text, k * 420);
-      });
-    });
-    setPreset('smeny');
+    setPreset('smeny', false);
   }
 
   /* ---------- kontakt: předvyplnění z kalkulačky / konfigurátoru ---------- */
@@ -141,7 +140,7 @@
     var msg = [];
     var PK = { zaklad: 'Základ', asistent: 'Asistent', komplet: 'Komplet' };
     if (p.get('zdroj') === 'kalkulacka') msg.push('Spočítal(a) jsem si přínos v kalkulačce: ' + p.get('zamestnanci') + ' zaměstnanců, ' + p.get('zavody') + ' závod(y), balíček ' + (PK[p.get('balicek')] || '') + (p.get('panel') ? ' + Panel služeb' : '') + '.');
-    var MN = { komunikace: 'interní komunikace', dokumenty: 'dokumenty', generator: 'Stories a Generátor', asistent: 'AI asistent', panel: 'Panel služeb', ewa: 'výběr mzdy' };
+    var MN = { komunikace: 'interní komunikace', dokumenty: 'dokumenty', generator: 'Stories a Generátor', asistent: 'AI asistent', rozcestnik: 'rozcestník služeb' };
     if (p.get('zdroj') === 'konfigurator')
       msg.push('Z konfigurátoru: balíček ' + (PK[p.get('balicek')] || '') + ', moduly: ' + (p.get('moduly') || '').split(',').map(function (k) { return MN[k] || k; }).join(', ') + '.');
     if (!p.get('zdroj') && PK[p.get('balicek')]) msg.push('Zajímá mě balíček ' + PK[p.get('balicek')] + '.');
@@ -157,7 +156,7 @@
     var sp = p.get('segment') || (p.get('zdroj') ? 'pink' : '');
     segIn.forEach(function (r) { if (r.value === sp) r.checked = true; r.addEventListener('change', function () { showSeg(r.value); }); });
     showSeg(sp);
-    var emp = p.get('zamestnanci'); if (emp) { var s = $('select[name="velikost"]', form); var n = +emp; s.value = n <= 50 ? '1-50' : n <= 200 ? '51-200' : n <= 500 ? '201-500' : n <= 1000 ? '501-1000' : '1000+'; }
+    var emp = p.get('zamestnanci'); if (emp) { var s = $('select[name="velikost"]', form); var n = +emp; s.value = n <= 50 ? '1-50' : n <= 200 ? '51-200' : n <= 500 ? '201-500' : n <= 1000 ? '501-1000' : n <= 2500 ? '1001-2500' : '2500+'; }
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       /* TODO: napojit na backend / e-mail obchodu. Pole "segment" (pink/blue/white/jine) = klasifikace leadu pro CRM a výběr master prezentace. */
@@ -435,212 +434,165 @@
 })();
 
 /* ======================================================
-   CENÍK: kalkulačka pro HR, servis a obchodní sítě
-   Ceny bez DPH. Servis a sítě podle návrhu ceníku z 2. 11. 2026.
+   CENÍK: kalkulačka pro servis a výrobu, obchodní sítě a HR
+   Ceny bez DPH. Servis a sítě podle cenových příloh z 9. 11. 2026
+   (obchodní sítě + servisní síť), HR podle předchozí verze webu.
+   Roční platba: měsíční ekvivalent = P × 0,8 (−20 %).
+   Zobrazené částky se zaokrouhlují na celé koruny.
+   Pět funkcí je vždy v ceně (minimum), cenu nemění.
+   Za příplatek: další jazyky (1 590 Kč za jazyk, jednorázově)
+   a víc než 3 odkazy v rozcestníku (nacenění po konzultaci).
    ====================================================== */
 (function () {
   'use strict';
   var roots = document.querySelectorAll('[data-pricecalc]');
   if (!roots.length) return;
-  var ANNUAL = 0.8; /* 12 měsíců předem: −20 % */
-  var nf = function (n, dec) { return n.toLocaleString('cs-CZ', { minimumFractionDigits: dec || 0, maximumFractionDigits: dec || 0 }).replace(/\s/g, ' '); };
-  var kc = function (n, dec) { return nf(n, dec) + ' Kč'; };
+  var LANG_EXTRA = 1590;
+  /* jezdec: po 25 do 100, dál po 100 do 2 500; poslední poloha = 2 500+ */
+  var VALS = [0, 25, 50, 75];
+  for (var v = 100; v <= 2500; v += 100) VALS.push(v);
+  VALS.push(2501);
+  var MAXI = VALS.length - 1;
+  /* všechny částky zaokrouhlené na celé koruny */
+  var nf = function (n) { return Math.round(n).toLocaleString('cs-CZ', { maximumFractionDigits: 0 }).replace(/\s/g, '\u00a0'); };
+  var kc = function (n) { return nf(n) + '\u00a0Kč'; };
+  var nShow = function (n) { return n > 2500 ? '2 500+' : nf(n); };
   var esc = function (t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
-  var CONTACT = { hr: 'pink', servis: 'blue', sit: 'white' };
-  var ICO = {
-    AI: '<path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.5 8.5 0 1 1 16.1-3.8z"/>',
-    DOC: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>',
-    VID: '<rect x="2" y="5" width="15" height="14" rx="2"/><path d="m17 10 5-3v10l-5-3"/>',
-    INFO: '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
-    START: '<path d="M4.5 16.5c-1.5 1.3-2 5-2 5s3.7-.5 5-2c.7-.8.7-2.1-.1-2.9a2.2 2.2 0 0 0-2.9-.1z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.9A12.9 12.9 0 0 1 22 2c0 2.7-.8 7.5-6 11a22.4 22.4 0 0 1-4 2z"/>',
-    HUB: '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
-    GEN: '<path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"/>',
-    EWA: '<rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="2.5"/>'
-  };
+  var pl = function (n, one, few, many) { return n === 1 ? one : n > 1 && n < 5 ? few : many; };
+  var flag = function (c, alt) { return '<img class="flag" src="assets/img/flags/' + c + '.svg" alt="' + (alt || '') + '" width="20" height="15">'; };
+  var CHECK = '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
 
-  /* ---------- definice segmentů ---------- */
+  var BASE_LANGS = [['cz', 'čeština'], ['sk', 'slovenština'], ['gb', 'angličtina'], ['de', 'němčina'], ['ua', 'ukrajinština']];
+  var baseFlags = '<span class="flags">' + BASE_LANGS.map(function (l) { return flag(l[0], l[1]); }).join('') + '</span>';
+  var INCLUDED = [
+    ['AI asistent', 'textový i hlasový'],
+    ['Generátor obsahu na míru', 'video, text a plánování příspěvků'],
+    ['Firemní dokumenty', 'nahrajeme je do asistenta'],
+    ['Rozcestník firemních služeb', '3 odkazy'],
+    ['Jazyky', baseFlags]
+  ];
+  var EXTRA_LANGS = [['pl', 'Polština'], ['hu', 'Maďarština'], ['ro', 'Rumunština'], ['bg', 'Bulharština'], ['vn', 'Vietnamština'], ['mn', 'Mongolština'], ['ph', 'Filipínština'], ['fr', 'Francouzština'], ['it', 'Italština']];
+
+  /* ---------- ceny ---------- */
+  var servisMonthly = function (e) {
+    if (e < 25 || e > 1000) return null;
+    return e <= 100 ? 80 * e + 2750 : e <= 500 ? 65 * e + 4250 : 45 * e + 14250;
+  };
+  var sitMonthly = function (u) {
+    if (u < 1 || u > 1000) return null;
+    if (u <= 25) return 3625;
+    if (u <= 40) return 3625 + (u - 25) * 1300 / 15;
+    if (u <= 300) return 4925 + (u - 40) * 17200 / 260;
+    return 22125 + (u - 300) * 24000 / 700;
+  };
+  var HR_KOMPLET = 6250; /* všech 5 funkcí v ceně = balíček Komplet */
+  var BIG_HR = 'Pro firmy nad 2 500 zaměstnanců připravíme individuální nabídku.';
+  var BIG = 'Pro víc než 2 500 lidí připravíme individuální nabídku.';
+  /* servis a sítě: aplikaci nedostanou jen zaměstnanci, proto obecně „lidé“ */
+  var LIDE = function (n) { return pl(n, 'člověk', 'lidé', 'lidí'); };
+  var ZAM = function (n) { return pl(n, 'zaměstnanec', 'zaměstnanci', 'zaměstnanců'); };
+
   var SEG = {
-    hr: {
-      tab: 'HR a zaměstnanci', dot: 'pink',
-      title: 'Aplikace pro HR a zaměstnance',
-      steps: [
-        { key: 'vel', t: 'Kolik máte zaměstnanců', opts: [['s', 'do 100'], ['m', '101–500'], ['l', '501–2 000'], ['xl', '2 001+']] },
-        { key: 'need', t: 'O co máte zájem', multi: true, opts: [['komunikace', 'Interní komunikace a novinky'], ['generator', 'Novinky na míru v Generátoru'], ['asistent', 'Textový a hlasový AI asistent'], ['dokumenty', 'Dokumenty v mobilu'], ['panel', 'Rozcestník firemních služeb'], ['ewa', 'Výběr mzdy jako benefit']] }
-      ],
-      def: { obor: 'vyroba', vel: 'm', zavody: 1, need: ['komunikace', 'asistent'], pay: 'm' }
-    },
     servis: {
-      tab: 'Servis a terén', dot: 'blue',
-      title: 'AI servisní asistent',
-      steps: [
-        { key: 'presetN', t: 'Kolik máte zaměstnanců', opts: [['20', '20'], ['40', '40'], ['100', '100'], ['200', '200'], ['500', '500'], ['1000', '1 000'], ['2500', '2 500']] },
-        { key: 'need', t: 'O co máte zájem', multi: true, opts: [['manualy', 'Manuály a know-how na jednom místě'], ['asistent', 'Textový a hlasový AI asistent'], ['video', 'Videonávody a školení'], ['novinky', 'Technické novinky'], ['rozcestnik', 'Rozcestník pro vaše služby'], ['ewa', 'Výběr mzdy pro zaměstnance']] }
-      ],
-      def: { obor: 'stroje', vel: 'm', presetN: '200', n: 200, need: ['manualy', 'asistent'], pay: 'm' }
+      tab: 'Servis a výroba', contact: 'blue', impl: '45 000–60 000 Kč',
+      calc: function (n) {
+        if (n > 2500) return { indiv: BIG };
+        var p = servisMonthly(n);
+        if (p === null) return { indiv: n < 25 ? 'Pro méně než 25 lidí připravíme individuální nabídku.' : 'Pro víc než 1 000 lidí připravíme individuální nabídku.' };
+        return { p: p };
+      }
     },
     sit: {
-      tab: 'Obchodní sítě', dot: 'white',
-      title: 'AI asistent pro obchodní sítě',
-      steps: [
-        { key: 'presetN', t: 'Kolik máte zaměstnanců', opts: [['25', '25'], ['50', '50'], ['100', '100'], ['200', '200'], ['500', '500'], ['1000', '1 000']] },
-        { key: 'need', t: 'O co máte zájem', multi: true, opts: [['produkty', 'Produkty a postupy na jednom místě'], ['asistent', 'Textový a hlasový AI asistent'], ['kampane', 'Kampaně a obchodní novinky'], ['novacci', 'Školení a start nováčků'], ['nastroje', 'Rozcestník portálů a nástrojů']] }
-      ],
-      def: { obor: 'kosmetika', presetN: '200', n: 200, need: ['produkty', 'asistent'], pay: 'm' }
+      tab: 'Obchodní sítě', contact: 'white', impl: '30 000–50 000 Kč',
+      calc: function (n) {
+        if (n > 2500) return { indiv: BIG };
+        var p = sitMonthly(n);
+        if (p === null) return { indiv: 'Pro víc než 1 000 lidí připravíme individuální nabídku.' };
+        return { p: p, note: '+ 3 správci obsahu v ceně' };
+      }
+    },
+    hr: {
+      tab: 'HR a zaměstnanci', contact: 'pink', impl: null, people: false,
+      calc: function (n) {
+        if (n > 2500) return { indiv: BIG_HR };
+        return { p: HR_KOMPLET };
+      }
     }
   };
+  var ORDER = ['servis', 'sit', 'hr'];
+  var DEF = { n: 200, langs: [], links: false };
 
-  /* ---------- výpočty ---------- */
-  var HR_PKG = { zaklad: ['Základ', 0], asistent: ['Asistent', 2475], komplet: ['Komplet', 6250] };
-  var HR_PANEL = 6500, HR_ZAVOD = 12500;
-  var HR_MOD = {
-    komunikace: ['INFO', 'Interní komunikace a novinky', 'Zprávy a upozornění přímo do telefonu, i lidem bez firemního e-mailu.'],
-    dokumenty: ['DOC', 'Dokumenty', 'Výplatní pásky, smlouvy a směrnice v mobilu.'],
-    generator: ['GEN', 'PalmApp Generátor a Stories', 'Z krátkého zadání novinky pro každé oddělení a jazyk, ve stylu vaší firmy.'],
-    asistent: ['AI', 'AI asistent hlasem i textem', 'Odpovídá na opakované dotazy podle vašich směrnic.'],
-    panel: ['HUB', 'Panel služeb', 'Jídelna, parkování a firemní systémy na jednom místě.'],
-    ewa: ['EWA', 'Výběr mzdy jako benefit', 'Firma po implementaci neplatí nic měsíčně.']
-  };
-  var SIZE_L = { s: 'do 100', m: '101–500', l: '501–2 000', xl: '2 001+' };
-  var SIZE_K = { s: 'Firma do 100 zaměstnanců', m: 'Firma se 101–500 zaměstnanci', l: 'Firma s 501–2 000 zaměstnanci', xl: 'Firma s více než 2 000 zaměstnanci' };
-
-  var SV_BAND = { s: { max: 100, rate: 69, od: true, impl: 8900 }, m: { max: 500, rate: 59, od: false, impl: 17900 }, l: { max: 2000, rate: 49, od: true, impl: 38900 }, xl: { max: Infinity, rate: 39, od: true, impl: 59000 } };
-  var SV_AI = {
-    stroje: 'Odpovědi ze servisních manuálů strojů, s dohledatelným zdrojem.',
-    klima: 'Chybové kódy a postupy pro jednotky a čerpadla, s dohledatelným zdrojem.',
-    elektro: 'Bezpečné postupy a poruchy střídačů i rozvaděčů, s dohledatelným zdrojem.',
-    budovy: 'Plány údržby a postupy pro technologie budov, s dohledatelným zdrojem.',
-    zdravotni: 'Servisní postupy a kontroly přístrojů, s dohledatelným zdrojem.',
-    jine: 'Odpovědi podle vaší dokumentace, s dohledatelným zdrojem.'
-  };
-  var SIT_AI = {
-    kosmetika: 'Složení, použití a aktuální kampaně z podkladů centrály.',
-    dum: 'Varianty, lhůty a obchodní pravidla pro dveře, okna, kuchyně a podlahy.',
-    auto: 'Produktové listy, sezónní akce a reklamační postupy.',
-    technika: 'Sortiment, parametry a schválené odpovědi zákazníkům.',
-    energie: 'Schválené nabídky, kampaně a postupy sjednání.',
-    potraviny: 'Produktové listy, sortiment a postupy objednávání.',
-    reality: 'Checklisty k zakázkám, obchodní postupy a pravidla centrály.',
-    finance: 'Schválené metodiky, produktové informace a procesní postupy.',
-    jine: 'Produktové informace a pravidla z vašich podkladů.'
-  };
-  var sitMonthly = function (n) {
-    var ext = 0, a = Math.max(0, Math.min(n, 100) - 25), b = Math.max(0, Math.min(n, 500) - 100), c = Math.max(0, n - 500);
-    ext = a * 59 + b * 49 + c * 29;
-    return { base: 8900, ext: ext, extUsers: Math.max(0, n - 25), total: 8900 + ext };
-  };
-
-  var interests = function (seg, st) {
-    var step = SEG[seg].steps.filter(function (x) { return x.key === 'need'; })[0], lab = step.opts.filter(function (o) { return st.need.indexOf(o[0]) > -1; }).map(function (o) { return o[1].charAt(0).toLowerCase() + o[1].slice(1); });
-    return lab.length ? ' · zájem: ' + lab.join(', ') : '';
-  };
-  var compute = {
-    hr: function (st) {
-      var need = st.need, mods = ['komunikace', 'dokumenty'];
-      var gen = need.indexOf('generator') > -1;
-      var asis = need.indexOf('asistent') > -1;
-      if (gen) mods.push('generator');
-      if (asis || gen) mods.push('asistent');
-      if (need.indexOf('panel') > -1) mods.push('panel');
-      if (need.indexOf('ewa') > -1) mods.push('ewa');
-      var pkg = gen ? 'komplet' : asis ? 'asistent' : 'zaklad';
-      var z = Math.max(1, st.zavody | 0);
-      var lines = [['Balíček ' + HR_PKG[pkg][0], HR_PKG[pkg][1]]];
-      if (mods.indexOf('panel') > -1) lines.push(['Panel služeb', HR_PANEL]);
-      if (z > 1) lines.push(['Další závody: ' + (z - 1) + ' × ' + kc(HR_ZAVOD), (z - 1) * HR_ZAVOD]);
-      var total = lines.reduce(function (s, l) { return s + l[1]; }, 0);
-      if (mods.indexOf('ewa') > -1) lines.push(['Výběr mzdy', 0, '0 Kč měsíčně']);
-      var impl = mods.indexOf('ewa') > -1 ? [['Implementace výběru mzdy', '20 000 Kč <span class="ph">OVĚŘIT</span>'], ['Zavedení a školení', '<span class="ph">[DOPLNIT]</span>']] : [['Zavedení a školení', '<span class="ph">[DOPLNIT]</span>']];
-      return {
-        kicker: SIZE_K[st.vel] + ' · ' + z + (z === 1 ? ' závod' : z < 5 ? ' závody' : ' závodů'),
-        name: 'Balíček ' + HR_PKG[pkg][0] + (mods.indexOf('ewa') > -1 ? ' + výběr mzdy' : ''),
-        tag: 'Moduly podle toho, co řešíte',
-        list: mods.map(function (k) { var m = HR_MOD[k]; return { ic: m[0], t: m[1], d: m[2], on: false }; }),
-        lines: lines, total: total, od: false, impl: impl,
-        foot: '<b>Ceny bez DPH za jeden závod.</b> Každý další závod 12\u00a0500\u00a0Kč měsíčně. Zapnete jen moduly, které potřebujete.',
-        summary: 'HR · ' + SIZE_L[st.vel] + ' zaměstnanců · ' + z + ' záv. · balíček ' + HR_PKG[pkg][0] + (mods.indexOf('panel') > -1 ? ' + Panel služeb' : '') + (mods.indexOf('ewa') > -1 ? ' + výběr mzdy' : '')
-      };
-    },
-    servis: function (st) {
-      var b = SV_BAND[st.vel], n = Math.max(1, st.n | 0), need = st.need;
-      var name = n <= 40 ? 'Servisní tým' : n <= 250 ? 'Servis napříč firmou' : n <= 2000 ? 'Rozsáhlé nasazení' : 'Individuální nabídka';
-      var hl = { AI: need.indexOf('manualy') > -1 || need.indexOf('dotazy') > -1, DOC: need.indexOf('manualy') > -1, VID: need.indexOf('zauceni') > -1, INFO: need.indexOf('postupy') > -1 };
-      return {
-        kicker: SIZE_K[st.vel] + ' · ' + nf(n) + ' ' + (n === 1 ? 'uživatel' : n < 5 ? 'uživatelé' : 'uživatelů'),
-        name: name, tag: 'Jedna cena pro všechny vaše závody',
-        list: [
-          { ic: 'AI', t: 'Hlasový a textový AI asistent', d: '', on: hl.AI },
-          { ic: 'DOC', t: 'Manuály a firemní know-how', d: 'Schválené návody, postupy a odpovědi specialistů.', on: hl.DOC },
-          { ic: 'VID', t: 'Videonávody a krátká školení', d: 'Názorná pomoc při práci i zaškolování nových kolegů.', on: hl.VID },
-          { ic: 'INFO', t: 'Technické aktuality a rozcestník', d: 'Změny postupů, důležité kontakty a firemní odkazy.', on: hl.INFO }
-        ],
-        rate: b.rate, lines: need.indexOf('ewa') > -1 ? [['Výběr mzdy', 0, '0\u00a0Kč měsíčně']] : [], total: n * b.rate, od: b.od,
-        impl: [['Zavedení jednorázově', kc(b.impl)]].concat(need.indexOf('ewa') > -1 ? [['Implementace výběru mzdy', '20\u00a0000\u00a0Kč <span class="ph">OVĚŘIT</span>']] : []),
-        integ: need.indexOf('integrace') > -1,
-        foot: '<b>Cena platí společně pro všechny závody a pobočky vaší firmy.</b> Za jednotlivé závody se paušál nenásobí. Standardní orientační ceny bez DPH, individuální zvýhodnění rádi probereme podle rozsahu spolupráce.',
-        summary: 'Servis · firma ' + SIZE_L[st.vel] + ' zaměstnanců · ' + n + ' uživatelů · ' + name
-      };
-    },
-    sit: function (st) {
-      var n = Math.max(1, st.n | 0), p = sitMonthly(n), need = st.need;
-      var hl = { AI: need.indexOf('produkty') > -1 || need.indexOf('centrala') > -1, INFO: need.indexOf('kampane') > -1, START: need.indexOf('novacci') > -1, HUB: need.indexOf('nastroje') > -1 };
-      var lines = [['Základ: 25 uživatelů + 3 správci', p.base]];
-      if (p.extUsers) lines.push(['Rozšiřující licence: ' + nf(p.extUsers) + ' uživatelů', p.ext]);
-      return {
-        kicker: 'Pro ' + nf(n) + ' uživatelů sítě + 3 správce obsahu',
-        name: 'Zázemí pro celou síť', tag: 'Jedna licence pro centrálu i obchodní partnery',
-        list: [
-          { ic: 'AI', t: 'AI odpovědi k produktům a postupům', d: '', on: hl.AI },
-          { ic: 'INFO', t: 'Kampaně a obchodní novinky', d: 'Krátká sdělení a Stories propojí centrálu s celou sítí.', on: hl.INFO },
-          { ic: 'START', t: 'Rychlejší start prodejního týmu', d: 'Produktové znalosti a školení pro nové i zkušené členy.', on: hl.START },
-          { ic: 'HUB', t: 'Nástroje a kontakty na jednom místě', d: 'Rozcestník partnerských portálů, vzdělávání a podpory.', on: hl.HUB }
-        ],
-        lines: lines, total: p.total, od: false,
-        impl: [['Standardní zavedení jednorázově od', kc(9900)]],
-        integ: need.indexOf('integrace') > -1,
-        foot: '<b>Společná cena pro celou síť, prodejní místa a partnerské týmy.</b> Jejich počet cenu nenásobí. Standardní orientační ceny bez DPH, individuální zvýhodnění rádi probereme podle rozsahu spolupráce.',
-        summary: 'Obchodní síť · ' + n + ' uživatelů'
-      };
-    }
-  };
+  var idxOf = function (n) { for (var i = 0; i < VALS.length; i++) if (VALS[i] >= n) return i; return MAXI; };
+  var TICKS = [0, 500, 1000, 1500, 2000, 2501];
 
   /* ---------- vykreslení ---------- */
-  var stepHtml = function (seg, i, s, st) {
-    var chips = '<div class="opts" role="group" aria-label="' + esc(s.t) + '">' + s.opts.map(function (o) {
-      var on = s.multi ? st[s.key].indexOf(o[0]) > -1 : st[s.key] === o[0];
-      return '<button type="button" class="opt" data-k="' + s.key + '" data-v="' + o[0] + '"' + (s.multi ? ' data-multi' : '') + ' aria-pressed="' + on + '">' + esc(o[1]) + '</button>';
-    }).join('') + '</div>';
-    var num = '';
-    if (s.num) {
-      var inp = '<input id="pc-' + seg + '-' + s.num.key + '" type="number" inputmode="numeric" min="' + s.num.min + '" max="' + s.num.max + '" data-num="' + s.num.key + '" value="' + st[s.num.key] + '"' + (s.num.aria ? ' aria-label="' + esc(s.num.aria) + '"' : '') + '>';
-      num = s.num.label ? '<div class="pc-num"><label for="pc-' + seg + '-' + s.num.key + '">' + esc(s.num.label) + '</label>' + inp + '</div>' : '<div class="pc-num pc-num--solo">' + inp + '</div>';
+  var stepH = function (i, t, sub) { return '<h3><span class="n">' + i + '</span>' + esc(t) + (sub ? '<span class="pc-sub">' + esc(sub) + '</span>' : '') + '</h3>'; };
+  var tip = function (id) {
+    return '<span class="tip"><button type="button" class="tip-btn" aria-label="Jak naceňujeme implementaci" aria-describedby="' + id + '">?</button>' +
+      '<span class="tip-txt" role="tooltip" id="' + id + '">Přesné nacenění je možné po konzultaci specifických požadavků.</span></span>';
+  };
+
+  var rangeHtml = function (seg, i, st) {
+    var ix = idxOf(st.n), pct = ix / MAXI * 100;
+    var ppl = SEG[seg].people !== false, unit = ppl ? LIDE : ZAM;
+    return '<div class="cfg-step">' + stepH(i, ppl ? 'Pro kolik lidí aplikaci zpřístupníte' : 'Kolik máte zaměstnanců') +
+      '<div class="pc-range"><div class="pc-range-v"><output data-nout>' + nShow(st.n) + '</output><span data-nlab>' + unit(st.n) + '</span></div>' +
+      '<input type="range" min="0" max="' + MAXI + '" step="1" value="' + ix + '" data-range aria-label="' + (ppl ? 'Počet lidí s přístupem' : 'Počet zaměstnanců') + '" aria-valuetext="' + nShow(st.n) + ' ' + unit(st.n) + '" style="--fill:' + pct + '%">' +
+      '<div class="pc-ticks" aria-hidden="true">' + TICKS.map(function (t) { return '<span style="left:' + (idxOf(t) / MAXI * 100) + '%">' + nShow(t) + '</span>'; }).join('') + '</div></div></div>';
+  };
+
+  var inclHtml = function (i) {
+    return '<div class="cfg-step">' + stepH(i, 'Co je vždy v ceně', 'cenu nemění') +
+      '<ul class="pc-incl">' + INCLUDED.map(function (o) {
+        return '<li>' + CHECK + '<div><b>' + esc(o[0]) + '</b><small>' + o[1] + '</small></div></li>';
+      }).join('') + '</ul></div>';
+  };
+
+  var extraHtml = function (i, st) {
+    return '<div class="cfg-step">' + stepH(i, 'Za příplatek') +
+      '<div class="pc-xh"><b>Další jazyky</b><span>' + kc(LANG_EXTRA) + ' za jazyk, jednorázově</span></div>' +
+      '<div class="opts opts--lang" role="group" aria-label="Další jazyky">' + EXTRA_LANGS.map(function (l) {
+        return '<button type="button" class="opt opt--lang" data-lang="' + l[0] + '" aria-pressed="' + (st.langs.indexOf(l[0]) > -1) + '">' + flag(l[0]) + esc(l[1]) + '</button>';
+      }).join('') + '</div>' +
+      '<p class="pc-hint">Další světové jazyky připravíme na vyžádání.</p>' +
+      '<div class="pc-xh pc-xh--sep"><b>Rozcestník firemních služeb</b><span>3 odkazy v ceně</span></div>' +
+      '<div class="opts"><button type="button" class="opt" data-links aria-pressed="' + st.links + '">Chci víc než 3 odkazy</button></div></div>';
+  };
+
+  var interests = function (st) {
+    var parts = [];
+    if (st.langs.length) parts.push('další jazyky: ' + EXTRA_LANGS.filter(function (l) { return st.langs.indexOf(l[0]) > -1; }).map(function (l) { return l[1].toLowerCase(); }).join(', '));
+    if (st.links) parts.push('víc než 3 odkazy v rozcestníku');
+    return parts.length ? ' · ' + parts.join(' · ') : '';
+  };
+
+  var resHtml = function (seg, st, uid) {
+    var d = SEG[seg], n = st.n | 0, base = 'kontakt.html?segment=' + d.contact + '&zdroj=cenik&zamestnanci=' + n;
+    if (n < 1) return '<div class="pc-empty"><b>Posuňte jezdec</b><p>Nastavte počet lidí a hned uvidíte cenu.</p></div>';
+    var r = d.calc(n), who = nShow(n) + ' ' + (d.people !== false ? LIDE(n) : ZAM(n));
+    if (r.indiv) {
+      return '<div class="pc-indiv"><span class="pc-col-k">' + esc(d.tab) + ' · ' + who + '</span><b>Individuální nabídka</b><p>' + esc(r.indiv) + '</p></div>' +
+        '<a class="btn btn--primary btn--lg" href="' + base + '&navrh=' + encodeURIComponent(d.tab + ' · ' + who + interests(st) + ' · individuální nabídka') + '">Ozvěte se nám</a>';
     }
-    return '<div class="cfg-step"><h3><span class="n">' + (i + 1) + '</span>' + esc(s.t) + (s.multi ? '<span class="pc-sub">(vyberte vše, co platí)</span>' : '') + '</h3>' +
-      (s.numFirst ? num + chips : chips + num) + '</div>';
+    var m = Math.round(r.p), y = Math.round(r.p * 0.8), nl = st.langs.length;
+    var cols = '<div class="pc-cols">' +
+      '<div class="pc-col"><span class="pc-col-k">Měsíčně</span><b>' + kc(m) + '</b></div>' +
+      '<div class="pc-col pc-col--y"><span class="pc-col-k">Měsíčně při roční platbě</span><b>' + kc(y) + '</b><span class="pc-disc">−20 %</span></div></div>';
+    var rows = '';
+    if (d.impl) rows += '<div class="pc-impl"><span>Implementace firemního řešení' + tip('tip-' + uid) + '</span><b>' + d.impl + '</b></div>';
+    rows += '<div class="pc-impl"><span>Školení a zavedení</span><b class="pc-free">Zdarma</b></div>';
+    rows += '<div class="pc-impl"><span>Jazyky v ceně</span><b>' + baseFlags + '</b></div>';
+    if (nl) rows += '<div class="pc-impl"><span>Další jazyky<small>' + nl + ' × ' + kc(LANG_EXTRA) + ', jednorázově</small></span><b>' + kc(nl * LANG_EXTRA) + '</b></div>';
+    if (st.links) rows += '<div class="pc-impl"><span>Další odkazy v rozcestníku</span><b>Za příplatek</b></div>';
+    var summary = d.tab + ' · ' + who + interests(st) + ' · orientačně ' + kc(m).replace(/ /g, ' ') + ' měsíčně, při roční platbě ' + kc(y).replace(/ /g, ' ') + ' měsíčně';
+    return cols + rows +
+      '<a class="btn btn--primary btn--lg" href="' + base + '&navrh=' + encodeURIComponent(summary) + '">Domluvit demo s tímto návrhem</a>' +
+      '<p class="pc-foot">Orientační ceny bez DPH.</p>';
   };
 
-  var resHtml = function (seg, st) {
-    var r = compute[seg](st), f = st.pay === 'y' ? ANNUAL : 1, od = r.od ? 'od ' : '';
-    var pay = '<div class="pc-pay" role="group" aria-label="Způsob platby"><button type="button" data-pay="m" aria-pressed="' + (st.pay === 'm') + '">Měsíční platba</button><button type="button" data-pay="y" aria-pressed="' + (st.pay === 'y') + '">12 měsíců předem <em>−20 %</em></button></div>';
-    var lines = r.lines.map(function (l) { return '<div><span>' + esc(l[0]) + '</span><b>' + (l[2] || kc(l[1] * f)) + '</b></div>'; }).join('');
-    var tot = r.total * f, sub;
-    if (seg === 'servis') {
-      sub = f < 1 ? od + kc(r.rate * f, 2) + ' / uživatel. Roční úhrada předem ' + od + kc(tot * 12) + '.' : od + kc(r.rate) + ' / uživatel. Při roční platbě ' + od + kc(r.total * ANNUAL) + ' / měsíc.';
-    } else if (r.total) {
-      sub = f < 1 ? 'Roční úhrada předem ' + od + kc(tot * 12) + '. Standardně ' + od + kc(r.total) + ' měsíčně.' : 'Při roční platbě ' + od + kc(r.total * ANNUAL) + ' / měsíc. Roční úhrada předem ' + od + kc(r.total * ANNUAL * 12) + '.';
-    } else { sub = 'Základní balíček je zdarma. Platíte jen moduly navíc.'; }
-    var impl = r.impl.map(function (l) { return '<div class="pc-impl"><span>' + esc(l[0]) + '</span><b>' + l[1] + '</b></div>'; }).join('');
-    var integ = r.integ ? '<p class="pc-integ">Napojení na vaše systémy vymezíme a naceníme zvlášť.</p>' : '';
-    var href = 'kontakt.html?segment=' + CONTACT[seg] + '&zdroj=cenik&navrh=' + encodeURIComponent(r.summary + interests(seg, st) + ' · orientačně ' + od + kc(tot).replace(/ /g, ' ') + ' měsíčně' + (f < 1 ? ' při roční platbě' : ''));
-    return pay +
-      (lines ? '<div class="price-sum pc-lines">' + lines + '</div>' : '') +
-      '<div class="pc-total"><span>' + (f < 1 ? 'Měsíčně při roční platbě' : 'Orientačně měsíčně') + '</span><b>' + od + kc(tot) + '</b></div><p class="pc-subt">' + sub + '</p>' +
-      impl + integ + '<a class="btn btn--primary btn--lg" href="' + href + '">Domluvit demo s tímto návrhem</a><p class="pc-foot">' + r.foot + '</p>';
-  };
-
-  Array.prototype.forEach.call(roots, function (root) {
-    var tabs = root.hasAttribute('data-tabs');
-    var states = {};
-    Object.keys(SEG).forEach(function (k) { states[k] = JSON.parse(JSON.stringify(SEG[k].def)); });
+  Array.prototype.forEach.call(roots, function (root, rix) {
+    var tabs = root.hasAttribute('data-tabs'), uid = 'pc' + rix;
+    var st = JSON.parse(JSON.stringify(DEF));
     var seg = root.getAttribute('data-pricecalc');
     if (tabs) {
       var p = new URLSearchParams(location.search).get('segment'), h = location.hash.replace('#', '');
@@ -649,51 +601,35 @@
     }
     var panels = document.querySelectorAll('[data-seg-panel]');
     var draw = function () {
-      var st = states[seg], d = SEG[seg];
       var off = tabs ? 1 : 0;
-      var oborHtml = tabs ? '<div class="cfg-step"><h3><span class="n">1</span>Obor</h3><div class="opts" role="group" aria-label="Obor">' + Object.keys(SEG).map(function (k) {
+      var oborHtml = tabs ? '<div class="cfg-step">' + stepH(1, 'Řešení') + '<div class="opts" role="group" aria-label="Řešení">' + ORDER.map(function (k) {
         return '<button type="button" class="opt" data-tab="' + k + '" aria-pressed="' + (k === seg) + '">' + SEG[k].tab + '</button>';
       }).join('') + '</div></div>' : '';
-      root.innerHTML = '<div class="cfg pc"><div class="pc-steps">' + oborHtml + d.steps.map(function (s, i) { return stepHtml(seg, i + off, s, st); }).join('') +
-        '</div><aside class="cfg-res pc-res" aria-live="polite">' + resHtml(seg, st) + '</aside></div>';
+      root.innerHTML = '<div class="cfg pc"><div class="pc-steps">' + oborHtml + rangeHtml(seg, 1 + off, st) + inclHtml(2 + off) + extraHtml(3 + off, st) +
+        '</div><aside class="cfg-res pc-res" aria-live="polite">' + resHtml(seg, st, uid) + '</aside></div>';
       Array.prototype.forEach.call(panels, function (pn) { pn.hidden = pn.getAttribute('data-seg-panel') !== seg; });
     };
-    var redrawRes = function () { root.querySelector('.pc-res').innerHTML = resHtml(seg, states[seg]); };
+    var redrawRes = function () { root.querySelector('.pc-res').innerHTML = resHtml(seg, st, uid); };
     root.addEventListener('click', function (e) {
-      var t = e.target.closest('button'); if (!t || !root.contains(t)) return;
-      var st = states[seg];
+      var t = e.target.closest('button'); if (!t || !root.contains(t) || t.classList.contains('tip-btn')) return;
       if (t.hasAttribute('data-tab')) { seg = t.getAttribute('data-tab'); draw(); if (history.replaceState) history.replaceState(null, '', '#' + seg); return; }
-      if (t.hasAttribute('data-pay')) { st.pay = t.getAttribute('data-pay'); redrawRes(); return; }
-      var k = t.getAttribute('data-k'); if (!k) return;
-      var v = t.getAttribute('data-v');
-      if (t.hasAttribute('data-multi')) {
-        var i = st[k].indexOf(v); if (i > -1) st[k].splice(i, 1); else st[k].push(v);
-        t.setAttribute('aria-pressed', String(i < 0));
-      } else {
-        st[k] = v;
-        Array.prototype.forEach.call(t.parentNode.querySelectorAll('.opt'), function (x) { x.setAttribute('aria-pressed', String(x === t)); });
-        if (k === 'presetN') st.n = +v;
-        if (seg === 'servis') {
-          if (k === 'presetN') st.vel = st.n <= 100 ? 's' : st.n <= 500 ? 'm' : st.n <= 2000 ? 'l' : 'xl';
-          draw(); return;
-        }
+      if (t.hasAttribute('data-lang')) {
+        var c = t.getAttribute('data-lang'), i = st.langs.indexOf(c);
+        if (i > -1) st.langs.splice(i, 1); else st.langs.push(c);
+        t.setAttribute('aria-pressed', String(i < 0)); redrawRes(); return;
       }
-      redrawRes();
+      if (t.hasAttribute('data-links')) { st.links = !st.links; t.setAttribute('aria-pressed', String(st.links)); redrawRes(); }
     });
     root.addEventListener('input', function (e) {
-      var t = e.target; if (!t.hasAttribute('data-num')) return;
-      var st = states[seg], k = t.getAttribute('data-num'), v = parseInt(t.value, 10);
-      if (!(v > 0)) return;
-      v = Math.min(v, +t.max); st[k] = v;
-      if (seg === 'sit') { st.presetN = String(v); Array.prototype.forEach.call(root.querySelectorAll('[data-k="presetN"]'), function (x) { x.setAttribute('aria-pressed', String(+x.getAttribute('data-v') === v)); }); }
-      if (seg === 'servis' && k === 'n') {
-        var band = v <= 100 ? 's' : v <= 500 ? 'm' : v <= 2000 ? 'l' : 'xl';
-        var order = ['s', 'm', 'l', 'xl'];
-        if (order.indexOf(band) > order.indexOf(st.vel)) { st.vel = band; Array.prototype.forEach.call(root.querySelectorAll('[data-k="vel"]'), function (x) { x.setAttribute('aria-pressed', String(x.getAttribute('data-v') === band)); }); }
-      }
+      var t = e.target; if (!t.hasAttribute('data-range')) return;
+      var n = VALS[+t.value]; st.n = n;
+      t.style.setProperty('--fill', (t.value / MAXI * 100) + '%');
+      var unit = SEG[seg].people !== false ? LIDE : ZAM;
+      t.setAttribute('aria-valuetext', nShow(n) + ' ' + unit(n));
+      root.querySelector('[data-nout]').textContent = nShow(n);
+      root.querySelector('[data-nlab]').textContent = unit(n);
       redrawRes();
     });
-    root.addEventListener('change', function (e) { var t = e.target; if (t.hasAttribute('data-num')) t.value = states[seg][t.getAttribute('data-num')]; });
     draw();
   });
 })();

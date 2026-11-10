@@ -1334,14 +1334,14 @@ footer{padding:72px 0 40px;border-top:1px solid var(--line);margin-top:96px;font
 .mega--seg>a .ic .i{width:24px;height:24px}
 .mega--seg>a b{font-family:"Inter Tight",Inter,sans-serif;font-size:19px;font-weight:500;letter-spacing:-.02em}
 .mega--seg>a small{font-size:14px;margin-top:4px}
-.mega--seg>a:nth-of-type(1):hover,.mega--seg>a:nth-of-type(1)[aria-current="page"]{background:var(--pink-bg)}
-.mega--seg>a:nth-of-type(2):hover,.mega--seg>a:nth-of-type(2)[aria-current="page"]{background:var(--sky-3)}
-.mega--seg>a:nth-of-type(3):hover,.mega--seg>a:nth-of-type(3)[aria-current="page"]{background:var(--sand)}
+.mega--seg>a[href="hr.html"]:hover,.mega--seg>a[href="hr.html"][aria-current="page"]{background:var(--pink-bg)}
+.mega--seg>a[href="servis.html"]:hover,.mega--seg>a[href="servis.html"][aria-current="page"]{background:var(--sky-3)}
+.mega--seg>a[href="obchodni-site.html"]:hover,.mega--seg>a[href="obchodni-site.html"][aria-current="page"]{background:#F1F2F5}
 
 /* oborové stránky v barvě oboru: hero a závěrečná výzva */
 .seg-pink{--seg-grad:linear-gradient(155deg,#F07CA8 0%,#C93A74 42%,#6B1540 100%)}
 .seg-blue{--seg-grad:linear-gradient(155deg,#5A8BFF 0%,#1252EA 38%,#04349F 70%,#050D24 100%)}
-.seg-white{--seg-grad:linear-gradient(155deg,#A3A8B5 0%,#5B6173 42%,#151A28 100%)}
+.seg-white{--seg-grad:linear-gradient(155deg,#7C8294 0%,#666C7F 40%,#4A5062 100%)}
 .seg-page .phead.dark,.seg-page .cta{background:var(--seg-grad)}
 .seg-page .phead .glow,.seg-page .cta::before{display:none}
 .seg-page .phead .lead,.seg-page .cta .lead{color:rgba(255,255,255,.88)}
@@ -1876,3 +1876,190 @@ footer{padding:72px 0 40px;border-top:1px solid var(--line);margin-top:96px;font
 .fstage-phone{--bz:clamp(5px,.55vw,8px);padding:var(--bz);container-type:inline-size;border-radius:15.7%/7.45%}
 .fstage-screen{border-radius:calc(15.7cqw - var(--bz))}
 .fstage-phone .fstage-screen{display:block;height:100%;border-radius:calc(15.7cqw - var(--bz));background:#fff}
+
+/* ======================================================
+   v23 – jazyky, breaker banner, odznaky V ceně / Volitelné,
+   kalkulačka s jezdcem a dvěma sloupci (měsíčně / ročně)
+   ====================================================== */
+/* odznaky */
+.fbadge{display:inline-flex;align-items:center;gap:6px;min-height:26px;padding:0 11px;border-radius:999px;font-size:12px;font-weight:600;letter-spacing:.02em;white-space:nowrap}
+.fbadge::before{content:"";width:6px;height:6px;border-radius:999px;background:currentColor}
+.fbadge--inc{background:var(--green-bg);color:var(--green)}
+.fbadge--opt{background:var(--gold-bg);color:var(--gold-ink)}
+.fs-eyrow{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+
+/* jazyky */
+.lang{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:64px;align-items:center}
+.lang-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:28px}
+.lang-row+.lang-row{margin-top:16px}
+.lang-chips{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.lang-chips li{border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-size:15px;font-weight:500;background:#fff}
+.lang-more{margin:0;font-size:15px;line-height:1.5;color:var(--muted)}
+.lang-more b{color:var(--ink);font-weight:600}
+.lang-viz{position:relative;border-radius:var(--r-xl);background:radial-gradient(80% 90% at 70% 100%,#DCE6FF 0%,#EEF2FB 60%,#F3F5FB 100%);padding:40px;display:flex;flex-direction:column;gap:10px;min-height:440px;justify-content:center}
+.lang-src{align-self:flex-start;background:var(--ink);color:#fff;border-radius:16px 16px 16px 4px;padding:12px 16px;font-size:14px;line-height:1.45;max-width:85%;margin-bottom:8px}
+.lang-src small{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--sky-2);margin-bottom:2px}
+.lang-msg{display:flex;align-items:flex-start;gap:12px;background:#fff;border-radius:16px;padding:12px 14px;box-shadow:0 12px 30px -22px rgba(4,52,159,.45);font-size:14px;line-height:1.45}
+.lang-msg p{margin:0;flex:1}
+.lang-msg em{font-style:normal;font-size:12px;font-weight:600;color:var(--gold-ink);background:var(--gold-bg);border-radius:999px;padding:2px 8px;white-space:nowrap}
+.lc{flex:none;display:inline-flex;align-items:center;justify-content:center;width:34px;height:24px;border-radius:8px;background:var(--sky);color:var(--navy);font-size:11px;font-weight:700;letter-spacing:.04em}
+.lang-msg--opt .lc{background:var(--gold-bg);color:var(--gold-ink)}
+.lang-viz.in .mu-pop{animation:popin .6s var(--ease) .4s forwards}
+.lang-viz.in .mu-pop2{animation:popin .6s var(--ease) .7s forwards}
+.lang-viz.in .mu-pop3{animation:popin .6s var(--ease) 1s forwards}
+.fv-langs .lang-msg{font-size:13px;padding:10px 12px}
+@media (max-width:900px){.lang{grid-template-columns:minmax(0,1fr);gap:40px}.lang-viz{min-height:0;padding:28px 20px}}
+@media (prefers-reduced-motion:reduce){.lang-viz .mu-pop,.lang-viz .mu-pop2,.lang-viz .mu-pop3{opacity:1;transform:none;animation:none}}
+
+/* breaker banner: cena za den */
+.brk{min-height:86vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:120px 32px;background:linear-gradient(160deg,#050D24 0%,#04349F 62%,#1252EA 100%)}
+.brk .glow{background:radial-gradient(55% 60% at 50% 110%,rgba(18,82,234,.9) 0%,rgba(18,82,234,0) 70%),radial-gradient(40% 45% at 0% 0%,rgba(5,13,36,.8) 0%,rgba(5,13,36,0) 70%)}
+.brk .gridlines{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.07) 1px,transparent 1px);background-size:72px 72px;-webkit-mask-image:radial-gradient(60% 60% at 50% 50%,#000 10%,transparent 75%);mask-image:radial-gradient(60% 60% at 50% 50%,#000 10%,transparent 75%)}
+.brk-in{position:relative;max-width:980px;display:flex;flex-direction:column;align-items:center}
+.brk-k{margin:0;font-size:15px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--sky-2)}
+.brk-n{display:flex;align-items:flex-start;justify-content:center;gap:clamp(8px,1.4vw,20px);margin-top:28px;font-family:"Inter Tight",Inter,sans-serif;color:#fff;line-height:.85}
+.brk-n b{font-weight:500;font-size:clamp(120px,22vw,300px);letter-spacing:-.06em}
+.brk-od{font-size:clamp(22px,2.6vw,36px);font-weight:500;color:var(--sky-2);margin-top:.6em}
+.brk-u{text-align:left;font-size:clamp(28px,4vw,56px);font-weight:500;letter-spacing:-.03em;line-height:1.02;margin-top:.35em}
+.brk-d{margin:36px 0 0;max-width:620px;font-size:20px;line-height:1.55;color:var(--sky-2)}
+.brk .btn{margin-top:32px}
+.brk-foot{margin:20px 0 0;font-size:13px;color:rgba(201,214,250,.7)}
+@media (max-width:640px){.brk{min-height:0;padding:88px 20px}.brk-d{font-size:17px}}
+
+/* kalkulačka: jezdec */
+.pc-range{margin-top:20px}
+.pc-range-v{display:flex;align-items:baseline;gap:10px}
+.pc-range-v output{font:500 clamp(36px,4vw,48px)/1 "Inter Tight",Inter,sans-serif;letter-spacing:-.04em}
+.pc-range-v span{font-size:16px;color:var(--muted)}
+.pc-range input[type=range]{height:36px;margin-top:14px}
+.pc-range input[type=range]::-webkit-slider-runnable-track{height:8px}
+.pc-range input[type=range]::-moz-range-track{height:8px}
+.pc-range input[type=range]::-moz-range-progress{height:8px}
+.pc-range input[type=range]::-webkit-slider-thumb{width:28px;height:28px;margin-top:-10px;border-width:3px}
+.pc-range input[type=range]::-moz-range-thumb{width:24px;height:24px;border-width:3px}
+.pc-ticks{position:relative;height:20px;margin:4px 14px 0}
+.pc-ticks span{position:absolute;top:0;transform:translateX(-50%);font-size:12px;color:var(--muted-2);white-space:nowrap}
+.pc-ticks span:first-child{transform:none}
+.pc-ticks span:last-child{transform:translateX(-100%)}
+/* kalkulačka: o co máte zájem */
+.opts--need{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+.opt--2l{display:flex;flex-direction:column;gap:3px;padding:12px 14px}
+.opt--2l b{font-weight:600;font-size:15px}
+.opt--2l small{font-size:13px;line-height:1.4;color:var(--muted)}
+/* kalkulačka: výsledek ve dvou sloupcích */
+.pc-cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pc-col{display:flex;flex-direction:column;gap:6px;padding:18px;border-radius:16px;border:1px solid var(--line);background:#fff;min-width:0}
+.pc-col--y{background:var(--sky-3);border-color:var(--sky-2)}
+.pc-col-k{font-size:13px;font-weight:600;color:var(--muted)}
+.pc-col-k em{font-style:normal;color:var(--green);margin-left:4px}
+.pc-col b{font:500 clamp(24px,2.3vw,32px)/1.05 "Inter Tight",Inter,sans-serif;letter-spacing:-.03em;color:var(--ink);overflow-wrap:anywhere}
+.pc-col small{font-size:12.5px;line-height:1.45;color:var(--muted)}
+.pc-impl span small{display:block;font-size:12px;color:var(--muted-2);margin-top:2px}
+.pc-free{color:var(--green)}
+.pc-empty,.pc-indiv{padding:22px;border-radius:16px;background:var(--sand)}
+.pc-empty b,.pc-indiv b{display:block;font:500 28px/1.1 "Inter Tight",Inter,sans-serif;letter-spacing:-.03em;margin-top:6px}
+.pc-empty p,.pc-indiv p{margin:10px 0 0;font-size:14px;line-height:1.55;color:var(--muted)}
+.pc-empty b{margin-top:0}
+@media (max-width:560px){.pc-cols{grid-template-columns:1fr}}
+/* ceník: tabulky ve dvou sloupcích */
+#jak-se-pocita .pgrid{grid-template-columns:minmax(0,1.45fr) minmax(0,1fr)}
+.ptab--2c td b,.ptab--once td b{display:block;font-weight:600}
+.ptab--2c td small,.ptab--once td small{display:block;font-size:12px;color:var(--muted-2);margin-top:2px;white-space:nowrap}
+.ptab--2c th em{font-style:normal;color:var(--green)}
+.ptab--hr td:nth-child(2){white-space:normal;text-align:left;color:var(--muted);font-size:14px}
+.ptab--hr th:nth-child(2){text-align:left}
+.ptab--once td:last-child{text-align:right}
+.incl{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:32px}
+.incl-col{background:#fff;border:1px solid var(--line);border-radius:var(--r-l);padding:24px}
+.incl-col ul{margin:14px 0 0;padding:0 0 0 18px;display:grid;gap:8px;font-size:15px;line-height:1.5;color:var(--ink)}
+@media (max-width:900px){#jak-se-pocita .pgrid{grid-template-columns:minmax(0,1fr)}.incl{grid-template-columns:1fr}}
+/* logo Vodárna Plzeň v pásu klientů */
+.marquee img[src*="logo-vodarna"]{height:28px}
+.ptab--once td{white-space:normal !important;vertical-align:top}
+.ptab--once td:last-child{width:46%}
+.ptab--once td small{white-space:normal}
+.pc-impl+.pc-impl{margin-top:10px}
+@media (max-width:560px){.pc-ticks span:nth-child(4){display:none}.pc-sub{display:block;margin:4px 0 0}.cfg-step h3{flex-wrap:wrap}}
+
+/* ======================================================
+   v24
+   ====================================================== */
+/* typografie: žádné osamocené slovo na posledním řádku */
+.h1,.h2,.h3,.h4,h1,h2,h3,h4,.fcard-t{text-wrap:balance}
+p,.lead,.p,li,small{text-wrap:pretty}
+/* Proč firmy PalmApp nasazují: horní odsazení za bannerem */
+.dband-sec+.section--sand{padding-top:var(--pad)}
+/* obchodní sítě: jemně šedá ikona místo obrysu */
+.ic--ring{background:#ECEEF2;box-shadow:none;color:var(--ink)}
+/* Co PalmApp umí: jeden nadpis jako u malých karet, šipka místo odkazu */
+.fcard{position:relative}
+.fcard-head{display:flex;align-items:flex-start;gap:16px;padding:32px 32px 0}
+.fcard-head .ic{width:48px;height:48px;border-radius:14px;background:#fff;color:var(--navy)}
+.fcard-tt{flex:1;min-width:0;padding-right:56px}
+.fcard-t{margin:0;font:500 24px/1.2 "Inter Tight",Inter,sans-serif;letter-spacing:-.02em;color:var(--ink)}
+.fcard-tt .p{margin-top:6px;max-width:440px;font-size:16px;line-height:1.5}
+.fcard-arr{position:absolute;right:28px;top:28px;width:44px;height:44px;border-radius:999px;background:#fff;color:var(--ink);display:flex;align-items:center;justify-content:center;transition:background-color .3s ease,color .3s ease,transform .4s var(--ease)}
+.fcard-arr .i{width:20px;height:20px}
+.fcard:hover .fcard-arr,.fcard:focus-visible .fcard-arr{background:var(--ink);color:#fff;transform:translate(2px,-2px)}
+@media (max-width:560px){.fcard-head{padding:24px 20px 0;gap:12px}.fcard-tt{padding-right:44px}.fcard-arr{right:16px;top:20px;width:38px;height:38px}}
+/* Další funkce: body bez odrážek, šedý text */
+.fs-step .bul{gap:6px;color:var(--muted);font-size:16px}
+.fs-step .bul .i{display:none}
+.fs-step .bul li{gap:0}
+/* vlajky */
+.flag{display:inline-block;width:20px;height:15px;border-radius:3px;box-shadow:0 0 0 1px rgba(10,15,31,.12);object-fit:cover;vertical-align:-2px;flex:none}
+.flags{display:inline-flex;flex-wrap:wrap;align-items:center;gap:6px;vertical-align:middle}
+.lc--flag{background:none;width:auto;height:auto;border-radius:0}
+.lc--flag .flag{width:24px;height:18px}
+/* ukázka zpráv: jen výběr hotových textů */
+.demo-in span.l{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:10px}
+.demo-src{min-height:0;resize:none;margin-top:12px;white-space:pre-line}
+/* kalkulačka: co je vždy v ceně */
+.pc-incl{list-style:none;margin:16px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+.pc-incl li{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:12px;background:var(--sky-3);box-shadow:inset 0 0 0 1px var(--sky-2)}
+.pc-incl .i{width:18px;height:18px;color:var(--blue);flex:none;margin-top:2px}
+.pc-incl b{display:block;font-size:15px;font-weight:600}
+.pc-incl small{display:block;margin-top:3px;font-size:13px;line-height:1.4;color:var(--muted)}
+.pc-incl .flags{margin-top:4px}
+/* kalkulačka: za příplatek */
+.pc-xh{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin-top:16px}
+.pc-xh b{font-size:15px;font-weight:600}
+.pc-xh span{font-size:14px;color:var(--muted)}
+.pc-xh--sep{margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
+.opts--lang{margin-top:12px}
+.opt--lang{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:8px 12px}
+.pc-hint{margin:10px 0 0}
+/* kalkulačka: dvě ceny */
+.pc-cols{gap:12px}
+.pc-col{position:relative;justify-content:space-between;gap:10px}
+.pc-col--y{background:#FFF8E6;border-color:#F2D48F}
+.pc-disc{display:inline-flex;align-items:center;justify-content:center;background:var(--gold);color:var(--ink);font-weight:700;font-size:13px;letter-spacing:.01em;border-radius:999px;padding:4px 10px;white-space:nowrap;line-height:1.1}
+.pc-col .pc-disc{position:absolute;top:-12px;right:14px;box-shadow:0 6px 14px -8px rgba(122,84,16,.6)}
+.ptab th .pc-disc{margin-left:6px;font-size:12px;padding:3px 8px}
+.pc-impl b .flags{gap:5px}
+/* otazník s nápovědou */
+.tip{position:relative;display:inline-flex;margin-left:6px;vertical-align:-3px}
+.tip-btn{width:18px;height:18px;padding:0;border-radius:999px;border:1px solid #C3C8D4;background:#fff;color:var(--muted);font:600 11px/1 Inter,system-ui,sans-serif;cursor:help;display:inline-flex;align-items:center;justify-content:center}
+.tip-btn:hover,.tip-btn:focus-visible{border-color:var(--ink);color:var(--ink)}
+.tip-txt{position:absolute;left:50%;bottom:calc(100% + 10px);width:240px;transform:translate(-50%,4px);background:var(--ink);color:#fff;font-size:13px;font-weight:400;line-height:1.45;text-align:left;white-space:normal;padding:10px 12px;border-radius:10px;opacity:0;pointer-events:none;transition:opacity .2s ease,transform .2s ease;z-index:30}
+.tip-txt::after{content:"";position:absolute;left:50%;top:100%;margin-left:-6px;border:6px solid transparent;border-top-color:var(--ink)}
+.tip:hover .tip-txt,.tip-btn:focus-visible+.tip-txt{opacity:1;transform:translate(-50%,0)}
+.ptab-wrap--tip,.ptab-wrap--tip .ptab{overflow:visible}
+@media (max-width:560px){.tip-txt{left:auto;right:-60px;transform:translateY(4px)}.tip:hover .tip-txt,.tip-btn:focus-visible+.tip-txt{transform:none}.tip-txt::after{left:auto;right:64px}}
+.mega--seg>a[href="obchodni-site.html"]:hover .ic--ring,.mega--seg>a[href="obchodni-site.html"][aria-current="page"] .ic--ring{background:#fff}
+.ptab-wrap--tip{background:#fff}
+.ptab-wrap--tip .ptab{background:transparent}
+.ptab--once td:first-child{white-space:nowrap !important}
+.ptab--once td:last-child{width:auto}
+@media (max-width:560px){.pc-ticks span:nth-child(5){display:none}.cfg-step h3 .pc-sub{flex-basis:100%;margin:4px 0 0 38px}.ptab--once td:first-child{white-space:normal !important}}
+/* v26: karty Co PalmApp umí nižší, obsah větší */
+.fcard{min-height:440px}
+.fcard .fviz{min-height:0;margin:12px 24px 24px;padding:20px}
+.fcard .fviz>*{zoom:1.32}
+.fcard-head .ic{width:52px;height:52px}
+.fcard-head .ic .i{width:22px;height:22px}
+.fcard-t{font-size:clamp(26px,2.2vw,30px)}
+.fcard-tt .p{font-size:17px}
+@media (max-width:900px){.fcard{min-height:0}.fcard .fviz>*{zoom:1.12}}
+@media (max-width:560px){.fcard .fviz>*{zoom:1}}
+@media (max-width:560px){.fcard-head{flex-direction:column;gap:14px}.fcard-tt{padding-right:0}.fcard-t{font-size:24px}.fcard-tt .p{font-size:16px}}

@@ -7,18 +7,17 @@
 ```
 index.html               Úvod (pro firmy)
 zamestnanec.html         Pro zaměstnance (má vlastní inline CSS)
-hr.html                  Oborové řešení – HR
-servis.html              Oborové řešení – servis a terén
-obchodni-site.html       Oborové řešení – obchodní sítě
-interni-komunikace.html  Produkt
-novinky.html             Produkt
-ai-asistent.html         Produkt
-vyber-mzdy.html          Produkt
+servis.html              Řešení – servis a výroba
+obchodni-site.html       Řešení – obchodní sítě
+hr.html                  Řešení – HR a zaměstnanci
+interni-komunikace.html  Funkce
+novinky.html             Funkce
+ai-asistent.html         Funkce
 cenik.html               Ceník + kalkulačka / konfigurátor
 kontakt.html             Kontaktní formulář
 assets/firma.css         Styly (všechny stránky kromě zamestnanec.html)
 assets/firma.js          Navigace, animace, kalkulačka, předvyplnění formuláře
-assets/img/               Screeny aplikace a fotky (WebP)
+assets/img/               Screeny aplikace, fotky a logo Vodárny Plzeň (WebP)
 ```
 
 ## Nasazení
@@ -34,9 +33,13 @@ assets/img/               Screeny aplikace a fotky (WebP)
 
 ## Kalkulačka ceníku
 
-- Logika i ceny jsou v `assets/firma.js`, blok „CENÍK: kalkulačka“ (objekty `SEG`, `SV_BAND`, `sitMonthly`, `HR_PKG`).
-- Vkládá se prvkem `<div data-pricecalc="hr|servis|sit">`. Na `cenik.html` má navíc `data-tabs` (přepínání segmentů, kotvy `#hr`, `#servis`, `#sit`).
-- Servis a obchodní sítě podle návrhu ceníku z 2. 11. 2026. HR ceny převzaté z předchozí verze webu.
+- Logika i ceny jsou v `assets/firma.js`, blok „CENÍK: kalkulačka“ (`servisMonthly`, `sitMonthly`, `HR_KOMPLET`, `INCLUDED`, `EXTRA_LANGS`).
+- Vkládá se prvkem `<div data-pricecalc="servis|sit|hr">`. Na `cenik.html` má navíc `data-tabs` (volba řešení, kotvy `#servis`, `#sit`, `#hr`).
+- Jezdec: po 25 do 100, dál po 100 do 2 500, poslední poloha je „2 500+“ (individuální nabídka). Všechny částky se zobrazují zaokrouhlené na celé koruny.
+- Servis a obchodní sítě podle cenových příloh z 9. 11. 2026, ověřeno proti všem řádkům tabulek. Ceny platí do 1 000 zaměstnanců (servis od 25), mimo rozsah ukazuje kalkulačka individuální nabídku.
+- Výsledek: „Měsíčně“ a „Měsíčně při roční platbě“ (× 0,8, −20 %).
+- Pět funkcí je vždy v ceně a cenu nemění. Za příplatek: další jazyky (1 590 Kč za jazyk, jednorázově) a víc než 3 odkazy v rozcestníku.
+- Vlajky v `assets/img/flags/` jsou z balíčku flag-icons (MIT licence, © Panayiotis Lipiridis).
 
 ## Co je potřeba dořešit před spuštěním
 
@@ -44,8 +47,6 @@ assets/img/               Screeny aplikace a fotky (WebP)
    Napojení: `assets/firma.js`, blok `form.addEventListener('submit', …)` (označený `TODO`). Formulář posílá pole `typ` (demo / pilot), `segment` a předvyplněnou zprávu z kalkulačky.
 2. **Formulář „Doporučte nám firmu“ (`zamestnanec.html`)** také nikam neodesílá (`onsubmit="return false"`).
 3. **Placeholdery v textu** se na webu zobrazují žlutě zvýrazněné (třídy `.ph` a `.ph-num`). Vyhledejte `[X]`, `[DOPLNIT`, `OVĚŘIT`:
-   - `index.html`, `hr.html` – statistiky výběru mzdy
-   - `vyber-mzdy.html` – statistiky, cena implementace, FAQ
    - `zamestnanec.html` – přihlášení, obnova hesla
-   - `cenik.html` + kalkulačka HR – implementace výběru mzdy (OVĚŘIT), zavedení HR (DOPLNIT)
-4. **Mockupy:** screeny aplikace a fotky jsou v `assets/img/` (WebP). Zbývající šedé boxy „Mockup · …“ čekají na podklady (administrace, servisní a obchodní asistent, pozvánka).
+4. **Výběr mzdy** je jen na `zamestnanec.html`. Firemní stránka `vyber-mzdy.html` je smazaná, pokud je na serveru, smažte ji i tam (nebo přesměrujte na `index.html`).
+5. **Mockupy:** screeny aplikace a fotky jsou v `assets/img/` (WebP). Zbývající šedé boxy „Mockup · …“ čekají na podklady (administrace, servisní a obchodní asistent, pozvánka).
